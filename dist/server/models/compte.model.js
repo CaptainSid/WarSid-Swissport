@@ -42,7 +42,7 @@ var CompteSchema = new mongoose.Schema({
     required: true
   },
   dateDeNaissance: {
-    type: Date
+    type: String
   }
 });
 

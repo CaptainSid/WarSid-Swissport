@@ -3,6 +3,8 @@ import express from 'express';
 import authRoutes from './auth.route';
 import expressJWT from "express-jwt";
 import config from '../../config/config';
+import profilRoutes from './profile.route';
+import accueilRoutes from './accueil.route';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -19,6 +21,8 @@ const router = express.Router(); // eslint-disable-line new-cap
 
 
 router.use(authRoutes);
+router.use(profilRoutes);
+router.use(accueilRoutes);
 
 
 export default router;

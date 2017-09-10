@@ -1,111 +1,125 @@
-'use strict';
+// import mongoose from 'mongoose';
+// import request from 'supertest-as-promised';
+// import httpStatus from 'http-status';
+// import chai, { expect } from 'chai';
+// import app from '../../index';
 
-var _mongoose = require('mongoose');
+// chai.config.includeStack = true;
 
-var _mongoose2 = _interopRequireDefault(_mongoose);
+// /**
+//  * root level hooks
+//  */
+// after((done) => {
+//   // required because https://github.com/Automattic/mongoose/issues/1251#issuecomment-65793092
+//   mongoose.models = {};
+//   mongoose.modelSchemas = {};
+//   mongoose.connection.close();
+//   done();
+// });
 
-var _supertestAsPromised = require('supertest-as-promised');
+// before()
 
-var _supertestAsPromised2 = _interopRequireDefault(_supertestAsPromised);
+// describe('## User APIs', () => {
+//   let user = {
+//     username: 'KK123',
+//     mobileNumber: '1234567890'
+//   };
 
-var _httpStatus = require('http-status');
+//   describe('# POST /api/users', () => {
+//     it('should create a new user', (done) => {
+//       request(app)
+//         .post('/api/users')
+//         .send(user)
+//         .expect(httpStatus.OK)
+//         .then((res) => {
+//           expect(res.body.username).to.equal(user.username);
+//           expect(res.body.mobileNumber).to.equal(user.mobileNumber);
+//           user = res.body;
+//           done();
+//         })
+//         .catch(done);
+//     });
+//   });
 
-var _httpStatus2 = _interopRequireDefault(_httpStatus);
+//   describe('# GET /api/users/:userId', () => {
+//     it('should get user details', (done) => {
+//       request(app)
+//         .get(`/api/users/${user._id}`)
+//         .expect(httpStatus.OK)
+//         .then((res) => {
+//           expect(res.body.username).to.equal(user.username);
+//           expect(res.body.mobileNumber).to.equal(user.mobileNumber);
+//           done();
+//         })
+//         .catch(done);
+//     });
 
-var _chai = require('chai');
+//     it('should report error with message - Not found, when user does not exists', (done) => {
+//       request(app)
+//         .get('/api/users/56c787ccc67fc16ccc1a5e92')
+//         .expect(httpStatus.NOT_FOUND)
+//         .then((res) => {
+//           expect(res.body.message).to.equal('Not Found');
+//           done();
+//         })
+//         .catch(done);
+//     });
+//   });
 
-var _chai2 = _interopRequireDefault(_chai);
+//   describe('# PUT /api/users/:userId', () => {
+//     it('should update user details', (done) => {
+//       user.username = 'KK';
+//       request(app)
+//         .put(`/api/users/${user._id}`)
+//         .send(user)
+//         .expect(httpStatus.OK)
+//         .then((res) => {
+//           expect(res.body.username).to.equal('KK');
+//           expect(res.body.mobileNumber).to.equal(user.mobileNumber);
+//           done();
+//         })
+//         .catch(done);
+//     });
+//   });
 
-var _index = require('../../index');
+//   describe('# GET /api/users/', () => {
+//     it('should get all users', (done) => {
+//       request(app)
+//         .get('/api/users')
+//         .expect(httpStatus.OK)
+//         .then((res) => {
+//           expect(res.body).to.be.an('array');
+//           done();
+//         })
+//         .catch(done);
+//     });
 
-var _index2 = _interopRequireDefault(_index);
+//     it('should get all users (with limit and skip)', (done) => {
+//       request(app)
+//         .get('/api/users')
+//         .query({ limit: 10, skip: 1 })
+//         .expect(httpStatus.OK)
+//         .then((res) => {
+//           expect(res.body).to.be.an('array');
+//           done();
+//         })
+//         .catch(done);
+//     });
+//   });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_chai2.default.config.includeStack = true;
-
-/**
- * root level hooks
- */
-after(function (done) {
-  // required because https://github.com/Automattic/mongoose/issues/1251#issuecomment-65793092
-  _mongoose2.default.models = {};
-  _mongoose2.default.modelSchemas = {};
-  _mongoose2.default.connection.close();
-  done();
-});
-
-before();
-
-describe('## User APIs', function () {
-  var user = {
-    username: 'KK123',
-    mobileNumber: '1234567890'
-  };
-
-  describe('# POST /api/users', function () {
-    it('should create a new user', function (done) {
-      (0, _supertestAsPromised2.default)(_index2.default).post('/api/users').send(user).expect(_httpStatus2.default.OK).then(function (res) {
-        (0, _chai.expect)(res.body.username).to.equal(user.username);
-        (0, _chai.expect)(res.body.mobileNumber).to.equal(user.mobileNumber);
-        user = res.body;
-        done();
-      }).catch(done);
-    });
-  });
-
-  describe('# GET /api/users/:userId', function () {
-    it('should get user details', function (done) {
-      (0, _supertestAsPromised2.default)(_index2.default).get('/api/users/' + user._id).expect(_httpStatus2.default.OK).then(function (res) {
-        (0, _chai.expect)(res.body.username).to.equal(user.username);
-        (0, _chai.expect)(res.body.mobileNumber).to.equal(user.mobileNumber);
-        done();
-      }).catch(done);
-    });
-
-    it('should report error with message - Not found, when user does not exists', function (done) {
-      (0, _supertestAsPromised2.default)(_index2.default).get('/api/users/56c787ccc67fc16ccc1a5e92').expect(_httpStatus2.default.NOT_FOUND).then(function (res) {
-        (0, _chai.expect)(res.body.message).to.equal('Not Found');
-        done();
-      }).catch(done);
-    });
-  });
-
-  describe('# PUT /api/users/:userId', function () {
-    it('should update user details', function (done) {
-      user.username = 'KK';
-      (0, _supertestAsPromised2.default)(_index2.default).put('/api/users/' + user._id).send(user).expect(_httpStatus2.default.OK).then(function (res) {
-        (0, _chai.expect)(res.body.username).to.equal('KK');
-        (0, _chai.expect)(res.body.mobileNumber).to.equal(user.mobileNumber);
-        done();
-      }).catch(done);
-    });
-  });
-
-  describe('# GET /api/users/', function () {
-    it('should get all users', function (done) {
-      (0, _supertestAsPromised2.default)(_index2.default).get('/api/users').expect(_httpStatus2.default.OK).then(function (res) {
-        (0, _chai.expect)(res.body).to.be.an('array');
-        done();
-      }).catch(done);
-    });
-
-    it('should get all users (with limit and skip)', function (done) {
-      (0, _supertestAsPromised2.default)(_index2.default).get('/api/users').query({ limit: 10, skip: 1 }).expect(_httpStatus2.default.OK).then(function (res) {
-        (0, _chai.expect)(res.body).to.be.an('array');
-        done();
-      }).catch(done);
-    });
-  });
-
-  describe('# DELETE /api/users/', function () {
-    it('should delete user', function (done) {
-      (0, _supertestAsPromised2.default)(_index2.default).delete('/api/users/' + user._id).expect(_httpStatus2.default.OK).then(function (res) {
-        (0, _chai.expect)(res.body.username).to.equal('KK');
-        (0, _chai.expect)(res.body.mobileNumber).to.equal(user.mobileNumber);
-        done();
-      }).catch(done);
-    });
-  });
-});
+//   describe('# DELETE /api/users/', () => {
+//     it('should delete user', (done) => {
+//       request(app)
+//         .delete(`/api/users/${user._id}`)
+//         .expect(httpStatus.OK)
+//         .then((res) => {
+//           expect(res.body.username).to.equal('KK');
+//           expect(res.body.mobileNumber).to.equal(user.mobileNumber);
+//           done();
+//         })
+//         .catch(done);
+//     });
+//   });
+// });
+"use strict";
 //# sourceMappingURL=Compte.test.js.map

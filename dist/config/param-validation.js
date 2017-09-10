@@ -21,6 +21,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     }
   },*/
 
+/* compte  administrateur ou planificateur */
+
 module.exports.register = _joi2.default.object().keys({
   nom: _joi2.default.string().required(),
   prenom: _joi2.default.string().required(),
@@ -32,6 +34,22 @@ module.exports.register = _joi2.default.object().keys({
   telephone: _joi2.default.string().required()
 
 });
+
+/* compte agent */
+module.exports.registerAg = _joi2.default.object().keys({
+  matricule: _joi2.default.number().required(),
+  nom: _joi2.default.string().required(),
+  prenom: _joi2.default.string().required(),
+  email: _joi2.default.string().required().email(),
+  motDePasse: _joi2.default.string().required(),
+  sexe: _joi2.default.string().valid(['Masculin', 'Feminin']).required(),
+  role: _joi2.default.string().valid(['Agent']).required(),
+  dateDeNaissance: _joi2.default.date(),
+  telephone: _joi2.default.string().required()
+
+});
+
+/* login */
 
 module.exports.login = _joi2.default.object().keys({
   email: _joi2.default.string().required().email(),

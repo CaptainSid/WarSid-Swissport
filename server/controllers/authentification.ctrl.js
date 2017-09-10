@@ -2,6 +2,7 @@ var mongoose=require('mongoose');
 var jwt=require('jsonwebtoken');
 var bcrypt=require('bcrypt');
 const compte=require('../models/compte.model');
+const compteAg= require ('../models/compteAg.model');
 import paramValidation from '../../config/param-validation';
 import Joi from 'joi';
 import config from '../../config/config';
@@ -10,7 +11,10 @@ import routes from '../routes/auth.route';
 
 
 
+/* register un administrateur ou un planificateur */
+
 module.exports.register=function(req,res){
+   
 
 //Vérifier les données envoyer dans le formulaire
 Joi.validate(req.body,paramValidation.register,function(err,value){
@@ -38,18 +42,71 @@ Joi.validate(req.body,paramValidation.register,function(err,value){
             if (err){
                 return res.status(400).send({
                     message:err
+                    
                 });
             } else{
                 return res.json(user);
+                
             }
         });
         }
         else{
             res.send(err.message);
+            
         }
 });
 
 };
+
+/* register un agent */
+
+
+module.exports.registerAg=function(req,res){
+    
+//Vérifier les données envoyer dans le formulaire
+Joi.validate(req.body,paramValidation.registerAg,function(err,value){
+
+    if (err === null)
+        {
+//crypter le mot de passe
+        const rounds=10;
+        var key=bcrypt.genSaltSync(rounds);
+        var mdp_hash=bcrypt.hashSync(req.body.motDePasse,key);
+// créer une nouvelle instance d'un compte Agent 
+    var nouveauCompteAg= new compteAg({
+        matricule:req.body.matricule,
+        nom:req.body.nom,
+        prenom:req.body.prenom,
+        email:req.body.email,
+        motDePasse:mdp_hash,
+        cle:key,
+        sexe:req.body.sexe,
+        fonction:req.body.role,
+        dateDeNaissance:req.body.dateDeNaissance,
+        telephone:req.body.telephone
+        });
+        //sauvegarder le compte dans la base de données 
+        nouveauCompteAg.save(function(err,user){
+            if (err){
+                return res.status(400).send({
+                    message:err
+                    
+                });
+            } else{
+                return res.json(user);
+                console.log('tajouta');
+            }
+        });
+        }
+        else{
+            res.send(err.message);
+            console.log('zmer erreur');
+        }
+});
+
+};
+
+/* la fonction login */
 
 module.exports.login=function(req,res) {
    
@@ -69,15 +126,23 @@ module.exports.login=function(req,res) {
                 const token = jwt.sign({
                     id: result._id
                   }, config.jwtSecret, {
-                    expiresIn: '1h'
+                    expiresIn: '12h'
                   });
                 return res.json({
-                    token,
-                    result
-                  });
+                  token,
+                result
+
+                 });
+                // return ({
+                   ///  token,
+                // result
+                // });
+                
+                
                 
               }
             }
+            
         });
       
 };
