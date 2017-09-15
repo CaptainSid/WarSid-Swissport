@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title> Login</title>
+    <title> Connexion </title>
 
     <!-- Bootstrap -->
     <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -40,6 +40,7 @@
                       var user = {
                           email: $("#email").val(),
                           motDePasse: $("#password").val(),
+                          message:'ss'
                       }
                       $.ajax({
                           type: 'POST',
@@ -47,7 +48,30 @@
                           data: user,
                           success: function (data) {                        
                               localStorage.setItem('token', data.token);
-                              window.location.replace("/api/listePlanning");           
+                              localStorage.setItem('logged', JSON.stringify({
+                               email: data.result.email,
+                              motDePasse: data.result.motDePasse,
+                              nom: data.result.nom,
+                              prenom: data.result.prenom,
+                              sexe: data.result.sexe,
+                              fonction: data.result.fonction, 
+                              dateDeNaissance : data.result.dateDeNaissance,
+                              telephone : data.result.telephone
+                                }));
+                                if ( data.result.fonction=='Administrateur')
+                                {
+                                  window.location.replace("/api/accueil/Administrateur");   
+                                }else
+                                {
+                                  if(data.result.fonction=='Planificateur')
+                                  {
+                                    window.location.replace("/api/listePlanning");   
+                                  }else{
+                                    window.location.replace("/api/echec");   
+                                  }
+                              
+                                }
+                                  
                           },
                           error:function(data){   
                               $.ajax({

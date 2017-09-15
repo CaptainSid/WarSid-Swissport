@@ -267,7 +267,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3> Le profil de <%= person.prenom %>  </h3>
+                <h3> Le profil de <%= personAg.prenom %>  </h3>
               </div>
 
               <div class="title_right">
@@ -318,7 +318,7 @@
                       </div>
                      
 
-                      <h3> <%= person.nom %> <%= person.prenom %> </h3>
+                      <h3> <%= personAg.nom %> <%= personAg.prenom %> </h3>
 
                       <ul class="list-unstyled user_data">
                         <!-- <li><i class="fa fa-map-marker user-profile-icon"></i> San Francisco, California, USA
@@ -333,24 +333,9 @@
                           <a href="http://www.kimlabs.com/profile/" target="_blank">www.kimlabs.com</a>
                         </li> -->
                       </ul>
-                      <!-- cas où c'est un administrateur -->
-                      <%if ( person.fonction == 'Administrateur') { %>
-                        <a href="/api/modifProfilAd/<%= person._id %>" class="btn btn-success"><i class="fa fa-edit m-right-xs"></i> Modifier profil</a>
-
-
-                        <% } %>
-
-                          <!-- cas où c'est un planificateur -->
-                          <%if ( person.fonction == 'Planificateur') { %>
-                             <a href="/api/modifProfilPl/<%= person._id %>" class="btn btn-success"><i class="fa fa-edit m-right-xs"></i> Modifier profil </a>
-
-
-
-                            <% } %>
-
-
-                      
-                      <br />
+                       <a href="/api/modifProfilAg/<%= personAg._id %>" class="btn btn-success"><i class="fa fa-edit m-right-xs"></i>Modifier profil </a>
+                     
+                      <br />  
 
                       <!-- start skills -->
                       
@@ -387,7 +372,7 @@
                                 
                                 <div class="message_wrapper">
                                   <h4 class="heading">Nom</h4>
-                                  <blockquote class="message"> <%= person.nom %> </blockquote>
+                                  <blockquote class="message"> <%= personAg.nom %> </blockquote>
                                   <br />
                                   
                                 </div>
@@ -397,7 +382,7 @@
                                 
                                 <div class="message_wrapper">
                                   <h4 class="heading">Prenom </h4>
-                                  <blockquote class="message"><%= person.prenom %></blockquote>
+                                  <blockquote class="message"><%= personAg.prenom %></blockquote>
                                   <br />
                                   
                                 </div>
@@ -407,7 +392,7 @@
                                 
                                 <div class="message_wrapper">
                                   <h4 class="heading">Sexe</h4>
-                                  <blockquote class="message"><%= person.sexe %> </blockquote>
+                                  <blockquote class="message"><%= personAg.sexe %> </blockquote>
                                   <br />
                                   
                                 </div>
@@ -417,7 +402,7 @@
                                   
                                   <div class="message_wrapper">
                                     <h4 class="heading">Date de naissance</h4>
-                                    <blockquote class="message"><%= person.dateDeNaissance %> </blockquote>
+                                    <blockquote class="message"><%= personAg.dateDeNaissance %> </blockquote>
                                     <br />
                                     
                                   </div>
@@ -433,12 +418,22 @@
 
                             <!-- start user projects -->
                             <ul class="messages">
+                                    <li>
+                                            <img src="/api/public/sources/production/images/matricule.png" class="avatar" alt="Avatar">
+                                            
+                                            <div class="message_wrapper">
+                                              <h4 class="heading">Matricule</h4>
+                                              <blockquote class="message"> <%= personAg.matricule %></blockquote>
+                                              <br />
+                                              
+                                            </div>
+                                          </li>
                               <li>
                                 <img src="/api/public/sources/production/images/phone.png" class="avatar" alt="Avatar">
                                 
                                 <div class="message_wrapper">
                                   <h4 class="heading">Téléphone</h4>
-                                  <blockquote class="message"> <%= person.telephone %></blockquote>
+                                  <blockquote class="message"> <%= personAg.telephone %></blockquote>
                                   <br />
                                   
                                 </div>
@@ -448,7 +443,7 @@
                                 
                                 <div class="message_wrapper">
                                   <h4 class="heading">email </h4>
-                                  <blockquote class="message"><%= person.email %></blockquote>
+                                  <blockquote class="message"><%= personAg.email %></blockquote>
                                   <br />
                                   
                                 </div>
@@ -458,7 +453,7 @@
                                 
                                 <div class="message_wrapper">
                                   <h4 class="heading">Fonction</h4>
-                                  <blockquote class="message"><%= person.fonction %> </blockquote>
+                                  <blockquote class="message"><%= personAg.fonction %> </blockquote>
                                   <br />
                                   
                                 </div>

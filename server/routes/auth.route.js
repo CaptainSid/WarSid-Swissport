@@ -2,6 +2,8 @@ import express from 'express';
 import validate from 'express-validation';
 import paramValidation from '../../config/param-validation';
 import authCtrl from '../controllers/authentification.ctrl';
+import profCtrl from '../controllers/profile.ctrl';
+const compte=require('../models/compte.model');
 import config from '../../config/config';
 
 
@@ -26,9 +28,19 @@ res.json({message:'Utilisateur non valide ou mot de passe incorrect'});
 });
 
 
-router.route('/register').get(function (req, res) {
-  res.render('register');
+/*ajouter compte administrateur */ 
+router.route('/registerAd').get(function (req, res) {
+  res.render('registerAd');
 }).post(authCtrl.register);
+/*ajouter compte planificateur */
+router.route('/registerPl').get(function (req, res) {
+  res.render('registerPl');
+}).post(authCtrl.register);
+/*ajouter compte agent temporaire après elle sera modifiée */
+router.route('/registerAg').get(function (req, res) {
+     res.render('registerAg');
+        }).post(authCtrl.registerAg);
+
 
 router.route('/home').get(function(req,res){
 res.render('home');

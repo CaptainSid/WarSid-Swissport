@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title> Profile | </title>
+    <title> Mon profil | </title>
 
     <!-- Bootstrap -->
     <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -29,8 +29,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script>
       var logged = JSON.parse(localStorage.getItem('logged'));
-      
-      
+      //var logged = localStorage.getItem('logged');
+      console.log( 'le nom est'+logged.email);
     </script>
     <script>
         $(document.body).hide();
@@ -152,7 +152,7 @@
               <a data-toggle="tooltip" data-placement="top" title="Lock">
                 <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
               </a>
-              <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+              <a data-toggle="tooltip" data-placement="top" title="Déconnexion" href="login.html">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
             </div>
@@ -171,7 +171,7 @@
               <ul class="nav navbar-nav navbar-right">
                 <li class="">
                   <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="/api/public/sources/production/images/user.png" alt=""> <script type="text/javascript">
+                   <img src="/api/public/sources/production/images/user.png" alt=""> <script type="text/javascript">
                       document.write(logged.nom)
                     </script> <script type="text/javascript">
                   document.write(logged.prenom)
@@ -188,7 +188,7 @@
                       </a>
                     </li>
                     <li><a href="javascript:;">Help</a></li>
-                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Déconnexion</a></li>
                   </ul>
                 </li>
 
@@ -267,7 +267,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3> Le profil de <%= person.prenom %>  </h3>
+                <h3>Mon profil </h3>
               </div>
 
               <div class="title_right">
@@ -282,9 +282,9 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Bienvenu(e)<script type="text/javascript">
-                      document.write(logged.prenom)
-                    </script> ! </h2>
+                    <h2>Bienvenu(e) <script type="text/javascript">
+                        document.write(logged.prenom)
+                      </script> ! </h2>
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
@@ -318,7 +318,11 @@
                       </div>
                      
 
-                      <h3> <%= person.nom %> <%= person.prenom %> </h3>
+                      <h3> <script type="text/javascript">
+                        document.write(logged.nom )
+                      </script> <script type="text/javascript">
+                  document.write(logged.prenom)
+                </script> </h3>
 
                       <ul class="list-unstyled user_data">
                         <!-- <li><i class="fa fa-map-marker user-profile-icon"></i> San Francisco, California, USA
@@ -333,23 +337,8 @@
                           <a href="http://www.kimlabs.com/profile/" target="_blank">www.kimlabs.com</a>
                         </li> -->
                       </ul>
-                      <!-- cas où c'est un administrateur -->
-                      <%if ( person.fonction == 'Administrateur') { %>
-                        <a href="/api/modifProfilAd/<%= person._id %>" class="btn btn-success"><i class="fa fa-edit m-right-xs"></i> Modifier profil</a>
 
-
-                        <% } %>
-
-                          <!-- cas où c'est un planificateur -->
-                          <%if ( person.fonction == 'Planificateur') { %>
-                             <a href="/api/modifProfilPl/<%= person._id %>" class="btn btn-success"><i class="fa fa-edit m-right-xs"></i> Modifier profil </a>
-
-
-
-                            <% } %>
-
-
-                      
+                      <a class="btn btn-success"><i class="fa fa-edit m-right-xs"></i>Modifier profil </a>
                       <br />
 
                       <!-- start skills -->
@@ -361,7 +350,7 @@
 
                       <div class="profile_title">
                         <div class="col-md-6">
-                          <h2>Les informations </h2>
+                          <h2>Mes informations </h2>
                         </div>
                         
                       </div>
@@ -387,7 +376,9 @@
                                 
                                 <div class="message_wrapper">
                                   <h4 class="heading">Nom</h4>
-                                  <blockquote class="message"> <%= person.nom %> </blockquote>
+                                  <blockquote class="message"> <script type="text/javascript">
+                                    document.write(logged.nom)
+                                  </script> </blockquote>
                                   <br />
                                   
                                 </div>
@@ -397,7 +388,9 @@
                                 
                                 <div class="message_wrapper">
                                   <h4 class="heading">Prenom </h4>
-                                  <blockquote class="message"><%= person.prenom %></blockquote>
+                                  <blockquote class="message"><script type="text/javascript">
+                                    document.write(logged.prenom)
+                                  </script></blockquote>
                                   <br />
                                   
                                 </div>
@@ -407,7 +400,9 @@
                                 
                                 <div class="message_wrapper">
                                   <h4 class="heading">Sexe</h4>
-                                  <blockquote class="message"><%= person.sexe %> </blockquote>
+                                  <blockquote class="message"><script type="text/javascript">
+                                    document.write(logged.sexe)
+                                  </script> </blockquote>
                                   <br />
                                   
                                 </div>
@@ -417,7 +412,9 @@
                                   
                                   <div class="message_wrapper">
                                     <h4 class="heading">Date de naissance</h4>
-                                    <blockquote class="message"><%= person.dateDeNaissance %> </blockquote>
+                                    <blockquote class="message"> <script type="text/javascript">
+                                        document.write(logged.dateDeNaissance)
+                                      </script> </blockquote>
                                     <br />
                                     
                                   </div>
@@ -438,7 +435,9 @@
                                 
                                 <div class="message_wrapper">
                                   <h4 class="heading">Téléphone</h4>
-                                  <blockquote class="message"> <%= person.telephone %></blockquote>
+                                  <blockquote class="message"> <script type="text/javascript">
+                                    document.write(logged.telephone)
+                                  </script></blockquote>
                                   <br />
                                   
                                 </div>
@@ -448,7 +447,9 @@
                                 
                                 <div class="message_wrapper">
                                   <h4 class="heading">email </h4>
-                                  <blockquote class="message"><%= person.email %></blockquote>
+                                  <blockquote class="message"><script type="text/javascript">
+                                    document.write(logged.email)
+                                  </script></blockquote>
                                   <br />
                                   
                                 </div>
@@ -458,7 +459,9 @@
                                 
                                 <div class="message_wrapper">
                                   <h4 class="heading">Fonction</h4>
-                                  <blockquote class="message"><%= person.fonction %> </blockquote>
+                                  <blockquote class="message"><script type="text/javascript">
+                                    document.write(logged.fonction)
+                                  </script> </blockquote>
                                   <br />
                                   
                                 </div>
