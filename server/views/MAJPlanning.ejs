@@ -3,11 +3,10 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Liste des plannings</title>
+    <title>Modifier un planning</title>
     <!-- Bootstrap -->
     <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -16,11 +15,12 @@
     <link href="/api/public/sources/vendors/nprogress/nprogress.css" rel="stylesheet">
     <!-- iCheck -->
     <link href="/api/public/sources/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-    <!-- Datatables -->
-    <link href="/api/public/sources/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="/api/public/sources/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-    <link href="/api/public/sources/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-    <link href="/api/public/sources/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+    <!-- bootstrap-wysiwyg -->
+    <link href="/api/public/sources/vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
+    <!-- Switchery -->
+    <link href="/api/public/sources/vendors/switchery/dist/switchery.min.css" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="/api/public/sources/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link href="/api/public/sources/build/css/custom.min.css" rel="stylesheet">
 </head>
@@ -87,6 +87,22 @@
                                 <li><a><i class="fa fa-desktop"></i> Liste des agents</a>
                                 </li>
                         </div>
+                    </div>
+                    <!-- /sidebar menu -->
+                    <!-- /menu footer buttons -->
+                    <div class="sidebar-footer hidden-small">
+                        <a data-toggle="tooltip" data-placement="top" title="Settings">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+              </a>
+                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+              </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Lock">
+                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+              </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+              </a>
                     </div>
                     <!-- /menu footer buttons -->
                 </div>
@@ -186,74 +202,50 @@
             </div>
             <!-- /top navigation -->
             <!-- page content -->
+            <script>
+                function checkExtension() {
+                    var f = document.getElementById('planning');
+                    var fileName = f.value;
+                    var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+                    ext = ext.toLowerCase();
+                    if (ext != "csv") {
+                        document.getElementById('planning').value = '';
+                        document.getElementById("send").disabled = true;
+                        alert("Attention ! vous devez importer des fichier .csv uniquement");
+                    }
+                    else {
+                        document.getElementById("send").disabled = false;
+                    }
+
+                }
+            </script>
             <div class="right_col" role="main">
                 <div class="">
-                    <div class="x_title">
-                        <h3>Liste des Plannings</h3>
-                    </div>
-
-                    <% for(var i=0;i<plan.length;i++){ %>
-
-
-                        <div class="col-md-4">
+                    <div class="clearfix"></div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
                                 <div class="x_content">
-                                    <article class="media event">
-                                        <a class="pull-left date">
-                                            <p class="month">
-                                                <%=plan[i].annee %>
-                                            </p>
-                                            <p class="day">
-                                                <%=plan[i].mois %>
-                                            </p>
-                                        </a>
-                                        <div class="media-body">
-                                            <a href="#">Id : <%=plan[i]._id %> </a>
-                                            <br>
-                                            <br>
-                                            <a href="/api/planning/<%=plan[i].annee%>/<%=plan[i].mois%>" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Afficher </a>
-                                            <a href="/api/MAJplanningUpload/<%=plan[i].annee%>/<%=plan[i].mois%>" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> MAJ </a>
-                                            <button class="btn btn-danger btn-xs" name="<%=plan[i].annee%>/<%=plan[i].mois%>"><i class="fa fa-trash-o"></i> Supprimer </button>
+                                    <br />
+                                    <form id="upload_form" enctype="multipart/form-data" class="form-horizontal form-label-left" method="POST" action="/api/MAJPlanning/<%=data.annee%>/<%=data.mois%>">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="planning">Planning.csv <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <input type="file" id="planning" name="planning" onchange="checkExtension();">
+                                            </div>
                                         </div>
-                                    </article>
+                                        <div class="ln_solid"></div>
+                                        <div class="form-group">
+                                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-5">
+                                                <button type="submit" id='send' class="btn btn-success" disabled>Envoyer</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-
-                        <% } %>
-
-                            <script>
-                                $(document).ready(function () {
-                                    $('.btn-danger').on('click', function (event) {
-                                        event.preventDefault();
-                                        var user_choice = window.confirm('Voulez-vous vraiment supprimer cet élément ? ');
-                                        if (user_choice == true) {
-
-                                            var nom = $(this).attr('name');
-
-                                        $.ajax({
-                                            type: 'DELETE',
-                                            url: '/api/supprimerPlanning/' + nom,
-                                            success: function (data) {
-                                                location.reload();
-                                            }
-                                        })
-                                           
-
-                                        } else {
-
-
-                                            return false;
-
-
-                                        }
-
-                                        return false;
-                                    });
-                                });
-                            </script>
-
-
+                    </div>
                 </div>
             </div>
             <!-- /page content -->
@@ -275,8 +267,11 @@
     <script src="/api/public/sources/vendors/fastclick/lib/fastclick.js"></script>
     <!-- NProgress -->
     <script src="/api/public/sources/vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="/api/public/sources/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
     <!-- iCheck -->
     <script src="/api/public/sources/vendors/iCheck/icheck.min.js"></script>
+
     <!-- Custom Theme Scripts -->
     <script src="/api/public/sources/build/js/custom.min.js"></script>
 </body>

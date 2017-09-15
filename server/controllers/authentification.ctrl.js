@@ -6,7 +6,7 @@ import paramValidation from '../../config/param-validation';
 import Joi from 'joi';
 import config from '../../config/config';
 import expressJwt from 'express-jwt';
-import routes from '../routes/auth.route';
+
 
 
 
@@ -89,37 +89,5 @@ module.exports.logedIn=function() {
       secret: config.jwtSecret,
       requestProperty: 'jwtCompte'
     });
-}
-/** je teste  !! 
-//  module de profile 
-module.exports.profile=function(req,res) {
-    nouveauCompte.send
-    
- //rechercher l'utilisateur dans la BDD 
-     compte.findOne({email:req.body.email}).then(
-         function(result,err) {
-             if ( err) throw err;
-             if (!result) {
-                 res.status('401').send('Authentication failed. User not found.')
-             } else{
-                 const rounds=10;
-                 var mdp_hash=bcrypt.hashSync(req.body.motDePasse,result.cle);
- //Vérifier si le mot de passe est correct
-               if (mdp_hash != result.motDePasse) {
-                   res.status('401').send('Authentication failed. Wrong password.')
-               } else {
-                 const token = jwt.sign({
-                     id: result._id
-                   }, config.jwtSecret, {
-                     expiresIn: '1h'
-                   });
-                 return res.json({
-                     token,
-                     result
-                   });
-                 
-               }
-             }
-         });
-       
-   }; **/
+};
+

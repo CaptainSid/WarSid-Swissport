@@ -37,6 +37,21 @@ router.route('/supprimerPlanning/:annee/:mois').delete(function (req, res) {
 
 });
 
+router.route('/MAJplanningUpload/:annee/:mois').get(function(req,res){
+var data=[];
+data.annee=req.params.annee;
+data.mois=req.params.mois;
+res.render('MAJPlanning',{data});
+});
+
+router.route('/MAJPlanning/:annee/:mois').post(function(req,res){
+    planCtrl.MAJplanning(req,res);
+    planCtrl.getAllPlanning(req, res).then(function (plan) {
+        res.render('listePlanning', { plan });
+});
+});
+
+
 router.route('/token').get(authCtrl.logedIn(), function (req, res) {
     res.status('200').send();
 });

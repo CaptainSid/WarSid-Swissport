@@ -20,7 +20,7 @@ module.exports.savePlanning = function (req, res) {
     });
 
     var upload = multer({ storage: Storage }).single("planning");
-    upload(req, res, function (err) {
+    upload(req, res, function (err) {//unhandled error !!!!!!!!!!!!!!!!!!!!!!!!!
         var month = req.body.mois;
         var year = req.body.annee;
 
@@ -40,68 +40,14 @@ module.exports.savePlanning = function (req, res) {
                             fs.unlinkSync(cheminCSV);
                         }
                         else {
-                            // lire le fichier CSV
-                            var csv = fs.readFileSync(cheminCSV, { encoding: 'utf-8' },
-                                function (err) { res.send(err.message); });
-
-                            // diviser le fichier en ligne
-                            csv = csv.split("\n");
-
-                            // Récupérer le Header du fichier
-                            var headers = csv.shift().split(",");
-
-                            // Remplacer les valeurs  des headers afin qu'on puisse les manipuler facilement 
-                            var na = headers.indexOf('Name');
-                            headers[0] = headers[0].replace(/N°/gi, 'matricule');
-                            headers[na] = headers[na].replace(/Name/gi, 'nom');
-
-                            // rechercher le premier élément du header qui correspont à un jour
-                            var deb = headers.findIndex(estJour);
-                            console.log(deb);
-                            for (var i = deb; i < headers.length; i++) {
-                                headers[i] = headers[i].replace(/ [a-z]{3}/gi, '');
-                                headers[i] = headers[i].replace(/. /g, 'jour');
-                                headers[i] = headers[i].replace(/1\r/g, '31');
-                            }
-                            //supprimer tous les champs qu'on veut pas sauvegarder dans la BDD
-                            var forbiden = [];
-                            var cpt = 0;
-                            for (var i = 0; i < headers.length; i++) {
-                                if (!estImportant(headers[i])) {
-                                    headers.splice(i, 1);
-                                    forbiden.push(i + cpt);
-                                    cpt++;
-                                    i--;
-                                }
-                            }
-
-                            var planning = [];
-
-                            //parcourir le fichier
-                            csv.forEach(function (ligne) {
-                                var tmp = {};
-                                var row = ligne.split(",")
-                                var cpt2 = 0;
-                                if (row[0] != '') // ligne non vide
-                                {
-                                    for (var i = 0; i < headers.length; i++) {
-                                        while (forbiden.indexOf(i + cpt2) > -1)// vérificer si la ligne ne fait pas partie des lignes supplémentaires dont on a pas besoin
-                                        {
-                                            cpt2++;
-                                        }
-                                        tmp[headers[i]] = row[i + cpt2];
-                                        tmp[headers[i]] = tmp[headers[i]].replace(/\r/g, '');
-                                    }
-                                    // ajouter l'objet
-                                    planning.push(tmp);
-                                }
-                            });
+                            //Récupérer les données du fichier csv et les retourner sous format json
+                            var buffer = traitementFichier(cheminCSV, res);
                             //sauvegarder le planning dans la BDD        
                             var planningGlobal = new plan({
                                 mois: month,
                                 annee: year,
-                                headers: headers,
-                                planning: planning
+                                headers: buffer.headers,
+                                planning: buffer.planning
                             });
                             planningGlobal.save(function (err, plan) {
                                 if (err) {
@@ -109,8 +55,6 @@ module.exports.savePlanning = function (req, res) {
                                 } else {
                                     res.render('planning', { plan: planningGlobal });
                                 }
-                                //supprimer le fichier crée 
-                                fs.unlinkSync(cheminCSV);
                             });
 
                         }
@@ -134,11 +78,72 @@ module.exports.savePlanning = function (req, res) {
 function estJour(str) {
     const regexp = new RegExp(/[a-z]{3}. [0-9]{1,2}/i);
     return regexp.test(str);
-}
+};
+//vérifier si une colonne doit etre sauvegarder dans la BDD
 function estImportant(str) {
     const regexp = new RegExp(/matricule|^nom$|^jour[0-9]{1,2}$/i);
     return regexp.test(str);
-}
+};
+
+function traitementFichier(cheminCSV, res) {
+    // lire le fichier CSV
+    var csv = fs.readFileSync(cheminCSV, { encoding: 'utf-8' },
+        function (err) { console.log("reading file error "+err.message); });// !!!!!!!!!!!!!!!!!
+    // diviser le fichier en ligne
+    csv = csv.split("\n");
+
+    // Récupérer le Header du fichier
+    var headers=[];
+    var headers = csv.shift().split(",");
+    // Remplacer les valeurs  des headers afin qu'on puisse les manipuler facilement 
+    var na = headers.indexOf('Name');
+    headers[0] = "matricule";
+    headers[na] = headers[na].replace(/Name/gi, 'nom');
+
+    // rechercher le premier élément du header qui correspont à un jour
+    var deb = headers.findIndex(estJour);
+    for (var i = deb; i < headers.length; i++) {
+        headers[i] = headers[i].replace(/ [a-z]{3}/gi, '');
+        headers[i] = headers[i].replace(/. /g, 'jour');
+        headers[i] = headers[i].replace(/1\r/g, '31');
+    }
+    //supprimer tous les champs qu'on veut pas sauvegarder dans la BDD
+    var forbiden = [];
+    var cpt = 0;
+    for (var i = 0; i < headers.length; i++) {
+        if (!estImportant(headers[i])) {
+            headers.splice(i, 1);
+            forbiden.push(i + cpt);
+            cpt++;
+            i--;
+        }
+    }
+
+    var planning = [];
+
+    //parcourir le fichier
+    csv.forEach(function (ligne) {
+        var tmp = {};
+        var row = ligne.split(",")
+        var cpt2 = 0;
+        if (row[0] != '') // ligne non vide
+        {
+            for (var i = 0; i < headers.length; i++) {
+                while (forbiden.indexOf(i + cpt2) > -1)// vérificer si la ligne ne fait pas partie des lignes supplémentaires dont on a pas besoin
+                {
+                    cpt2++;
+                }
+                tmp[headers[i]] = row[i + cpt2];
+                tmp[headers[i]] = tmp[headers[i]].replace(/\r/g, '');
+            }
+            // ajouter l'objet
+            planning.push(tmp);
+        }
+    });
+    fs.unlinkSync(cheminCSV);    
+    return ({ headers, planning });
+};
+
 //vérifier pour une date donnée si un planning existe dans la BDD
 function planningExist(month, year) {
 
@@ -183,6 +188,54 @@ module.exports.getAllPlanning = function (req, res) {
 
         });
     return planning;
+};
+
+module.exports.MAJplanning = function (req, res) {
+    module.exports.getPlanning(req, res).then(function (planningGlobal) {
+        var planningOriginal=[];
+        planningOriginal=planningGlobal.planning;
+        var Storage = multer.diskStorage({
+            destination: function (req, file, callback) {
+                callback(null, "./public");
+            },
+            filename: function (req, file, callback) {
+                var extension = path.extname(file.originalname).toLocaleLowerCase();
+                callback(null, file.fieldname + extension);
+            }
+        });
+
+        var upload = multer({ storage: Storage }).single("planning");
+        upload(req, res, function (err) {
+            var cheminCSV = '';
+            cheminCSV = (req.file.destination + '/' + req.file.filename);
+            var buffer = traitementFichier(cheminCSV, res);
+            var nvPlanning = buffer.planning;
+            var headers = buffer.headers;
+            var agentsConcernee = [];
+            //récupérer la liste des agents dont le planning a été modifier
+            for (var i = 0; i < planningOriginal.length; i++) { 
+                var agent = planningOriginal[i];
+                var nvAgent = nvPlanning.find(x => x.matricule ===agent.matricule);
+                for (var j = 0; j < headers.length; j++) {
+                    if (agent[headers[j]] != nvAgent[headers[j]]) {
+                        agentsConcernee.push(agent.matricule);
+                        j = headers.length; // pour sortir de la boucle immédiatement
+                    }
+                }
+            }
+            //envoyer les notifs au agent concernés
+            //to do 
+            //sauvegarder le planning dans la BDD   
+            var newValues = { headers: buffer.headers,planning:buffer.planning };
+            var x=plan.findOneAndUpdate({_id:planningGlobal._id},newValues,{ returnNewDocument: true }).then(function(res,err){
+                    if (err) throw err;
+                    return res;
+            });     
+        });
+
+
+
+    });
 };
 
 

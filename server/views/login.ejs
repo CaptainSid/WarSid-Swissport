@@ -47,7 +47,7 @@
                           data: user,
                           success: function (data) {                        
                               localStorage.setItem('token', data.token);
-                              window.location.replace("/api/home");           
+                              window.location.replace("/api/listePlanning");           
                           },
                           error:function(data){   
                               $.ajax({
