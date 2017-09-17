@@ -8,7 +8,8 @@ var bcrypt=require('bcrypt');
 const CompteSchema = new mongoose.Schema({
   matricule: {
       type: Number,
-      required: true
+      required: true,
+      unique:true
   },
   nom: {
     type: String,
@@ -47,13 +48,19 @@ const CompteSchema = new mongoose.Schema({
   },
   dateDeNaissance: {
     type: String,
-  }
+  },
+  urgentNotifications :[{
+    type: mongoose.Schema.Types.Mixed
+  }],
+  allNotifications :[{
+    type: mongoose.Schema.Types.Mixed
+  }]
 });
 
 
 
 
-module.exports= mongoose.model('CompteAg', CompteSchema);
+module.exports= mongoose.model('CompteAgent', CompteSchema);
 
 /**
  * Add your

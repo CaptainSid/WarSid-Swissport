@@ -1,6 +1,6 @@
 var mongoose=require('mongoose');
 var bcrypt=require('bcrypt');
-const compte=require('../models/compte.model');
+const compte=require('../models/compteAg.model');
 const plan = require('../models/planning.model');
 import config from '../../config/config';
 
