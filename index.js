@@ -12,7 +12,6 @@ var util=require('util');
 
 const debug = require('debug')('express-mongoose-es6-rest-api:index');
 
-
 // make bluebird default Promise
 Promise = require('bluebird'); // eslint-disable-line no-global-assign
 
@@ -25,9 +24,6 @@ const mongoUri = config.mongo.host;
 mongoose.connection.on('error',function() {
   throw new Error(`unable to connect to database: ${mongoUri}`);
 });
-
-
-app.listen(3000);
 
 
 

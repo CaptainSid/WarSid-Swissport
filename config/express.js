@@ -17,14 +17,17 @@ import ejs from 'ejs';
 import path from 'path';
 import jwt from 'jsonwebtoken';
 import fileUpload from 'express-fileupload';
-
+import socketio from 'socket.io';
 
 const app = express();
-
+const server = require('http').Server(app);
 /*if (config.env === 'development') {
   app.use(logger('dev'));
 }*/
 
+//set socket.io
+const io=socketio(server);
+const mySocket=require('../server/controllers/socket.ctrl').init(io);
 // set view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../server/views'));
@@ -44,33 +47,6 @@ app.use(helmet());
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
-
-
-// enable detailed API logging in dev env
-/*if (config.env === 'development') {
-  expressWinston.requestWhitelist.push('body');
-  expressWinston.responseWhitelist.push('body');
-  app.use(expressWinston.logger({
-    winstonInstance,
-    meta: true, // optional: log meta data about request (defaults to true)
-    msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
-    colorStatus: true // Color the status code (default green, 3XX cyan, 4XX yellow, 5XX red).
-  }));
-}*/
-
-//Vérifier si un utilisateur est connecté ou pas 
-/*app.use(function(req,res,next){
-if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0]=== 'JWT'){
-  jwt.verify(req.headers.authorization.split(' ')[1],config.jwtSecret,function(err,decode){
-    if (err) req.user=undefined;
-    req.user=decode;
-    next();
-  });
-} else{
-  req.user=undefined;
-  next();
-}
-}); */
 
 
 
@@ -120,5 +96,8 @@ app.use((err, req, res, next) => // eslint-disable-line no-unused-vars
     stack: config.env === 'development' ? err.stack : {}
   })
 );
+
+server.listen(3000);
+
 
 export default app;

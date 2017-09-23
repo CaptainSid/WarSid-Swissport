@@ -56,7 +56,14 @@
             $(document.body).show();
         }
     </script>
-
+<script src="/socket.io/socket.io.js"></script>
+<script>
+var socket = io.connect('http://localhost:3000',{query: 'fonction=Plannificateur'});
+socket.on('messages',function(message){
+    $.toaster({ priority : 'danger', title : 'Nouveau Message', message : message});
+    socket.emit('messageRecu',message);
+})
+</script>
     <div class="container body">
         <div class="main_container">
             <div class="col-md-3 left_col">
@@ -276,6 +283,8 @@
     <script src="/api/public/sources/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
     <!-- Custom Theme Scripts -->
     <script src="/api/public/sources/build/js/custom.min.js"></script>
+    <script src="/api/public/sources/jquery.toaster.js"></script>
+    
 </body>
 
 </html>

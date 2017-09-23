@@ -14,7 +14,6 @@ router.route('/echec').get(function(req,res){
   res.render('echec');
 });
 
-
 router.use(authRoutes);
 router.use(planRoutes);
 router.use(mobileRoutes);

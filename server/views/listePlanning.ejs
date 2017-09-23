@@ -56,6 +56,18 @@
             $(document.body).show();
         }
     </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        socket = io.connect('http://localhost:3000', { query: 'fonction=Plannificateur' });
+        socket.emit('viewAllMessages');
+        socket.on('messages', function (newMessage) {
+            $.toaster({ priority: 'danger', title: 'Nouveau Message', message: newMessage.text });
+            socket.emit('messageRecu', newMessage);
+            // mise à jour des derniers messages
+            socket.emit('viewAllMessages'); 
+        })
+    </script>
+
     <div class="container body">
         <div class="main_container">
             <div class="col-md-3 left_col">
@@ -71,7 +83,7 @@
                         </div>
                         <div class="profile_info">
                             <span>Welcome,</span>
-                            <h2>John Doe</h2>
+                            <h2>John D</h2>
                         </div>
                     </div>
                     <!-- /menu profile quick info -->
@@ -84,7 +96,7 @@
                                 </li>
                                 <li><a href="/api/upload"><i class="fa fa-edit"></i> Ajouter un Planning </a>
                                 </li>
-                                <li><a><i class="fa fa-desktop"></i> Liste des agents</a>
+                                <li><a href="/api/accueilAg/Agent"><i class="fa fa-desktop"></i> Liste des agents</a>
                                 </li>
                         </div>
                     </div>
@@ -119,57 +131,24 @@
                             <li role="presentation" class="dropdown">
                                 <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-green">6</span>
+                    <script>
+                            socket.on('allMessages',function(messages){
+                                var myMessages=document.getElementById("myMessages");
+                                myMessages.innerHTML='<div id="myMessages"></div>'
+                                    for (var i=messages.length-1;i>-1;i--){
+                                        myMessages.innerHTML +='<div id="myMessages"><li><a><span class="message">'+ messages[i].text+' </span> </a></li></div>'
+                                }
+                                var nb=document.getElementById('nbMsg');
+                                var x=messages.length;
+                                nb.innerHTML += ' <span class="badge bg-green" >'+x+'</span>'
+                            });
+                            </script>
+                            <div id="nbMsg"></div>
                   </a>
-                                <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                                    <li>
-                                        <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                                    </li>
-                                    <li>
-                                        <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                                    </li>
-                                    <li>
-                                        <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                                    </li>
-                                    <li>
-                                        <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                                    </li>
+                                <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">                           
+                 
+                                <div id="myMessages"></div>
+                      
                                     <li>
                                         <div class="text-center">
                                             <a>
@@ -224,33 +203,33 @@
 
                             <script>
                                 $(document).ready(function () {
-                                    $('.btn-danger').on('click', function (event) {
-                                        event.preventDefault();
-                                        var user_choice = window.confirm('Voulez-vous vraiment supprimer cet élément ? ');
-                                        if (user_choice == true) {
+                                            $('.btn-danger').on('click', function (event) {
+                                                event.preventDefault();
+                                                var user_choice = window.confirm('Voulez-vous vraiment supprimer cet élément ? ');
+                                                if (user_choice == true) {
 
-                                            var nom = $(this).attr('name');
+                                                    var nom = $(this).attr('name');
 
-                                        $.ajax({
-                                            type: 'DELETE',
-                                            url: '/api/supprimerPlanning/' + nom,
-                                            success: function (data) {
-                                                location.reload();
-                                            }
-                                        })
-                                           
-
-                                        } else {
+                                                    $.ajax({
+                                                        type: 'DELETE',
+                                                        url: '/api/supprimerPlanning/' + nom,
+                                                        success: function (data) {
+                                                            location.reload();
+                                                        }
+                                                    })
 
 
-                                            return false;
+                                                } else {
 
 
-                                        }
+                                                    return false;
 
-                                        return false;
-                                    });
-                                });
+
+                                                }
+
+                                                return false;
+                                            });
+                                        });
                             </script>
 
 
@@ -279,6 +258,10 @@
     <script src="/api/public/sources/vendors/iCheck/icheck.min.js"></script>
     <!-- Custom Theme Scripts -->
     <script src="/api/public/sources/build/js/custom.min.js"></script>
+    <script src="/api/public/sources/jquery.toaster.js"></script>
+
+
+
 </body>
 
 </html>

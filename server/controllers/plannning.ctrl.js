@@ -1,6 +1,8 @@
 var fs = require('fs');
 var csv = require('csvtojson');
 const plan = require('../models/planning.model');
+const compte = require('../models/compteAg.model');
+const socketManager = require('./socket.ctrl');
 import multer from 'multer';
 import path from 'path';
 import paramValidation from '../../config/param-validation';
@@ -54,6 +56,16 @@ module.exports.savePlanning = function (req, res) {
                                     return res.status(400).send(err.message);
                                 } else {
                                     res.render('planning', { plan: planningGlobal });
+                                    var listeAgent = [];
+                                    for (var i = 0; i < buffer.planning.length; i++) {
+                                        listeAgent.push(buffer.planning[i].matricule);
+                                    }
+                                    const maxNotifId = 99999999;
+                                    var notificationText = "Votre planning du mois  \n" + month + "/" + year + " est maintenant disponible";
+                                    var randomInt = require('random-int');
+                                    var notificationId = randomInt(maxNotifId);
+                                    var notification = { id: notificationId, text: notificationText };
+                                    notifierPersonnel(listeAgent, notification);
                                 }
                             });
 
@@ -88,12 +100,12 @@ function estImportant(str) {
 function traitementFichier(cheminCSV, res) {
     // lire le fichier CSV
     var csv = fs.readFileSync(cheminCSV, { encoding: 'utf-8' },
-        function (err) { console.log("reading file error "+err.message); });// !!!!!!!!!!!!!!!!!
+        function (err) { console.log("reading file error " + err.message); });// !!!!!!!!!!!!!!!!!
     // diviser le fichier en ligne
     csv = csv.split("\n");
 
     // Récupérer le Header du fichier
-    var headers=[];
+    var headers = [];
     var headers = csv.shift().split(",");
     // Remplacer les valeurs  des headers afin qu'on puisse les manipuler facilement 
     var na = headers.indexOf('Name');
@@ -140,7 +152,7 @@ function traitementFichier(cheminCSV, res) {
             planning.push(tmp);
         }
     });
-    fs.unlinkSync(cheminCSV);    
+    fs.unlinkSync(cheminCSV);
     return ({ headers, planning });
 };
 
@@ -192,8 +204,8 @@ module.exports.getAllPlanning = function (req, res) {
 
 module.exports.MAJplanning = function (req, res) {
     module.exports.getPlanning(req, res).then(function (planningGlobal) {
-        var planningOriginal=[];
-        planningOriginal=planningGlobal.planning;
+        var planningOriginal = [];
+        planningOriginal = planningGlobal.planning;
         var Storage = multer.diskStorage({
             destination: function (req, file, callback) {
                 callback(null, "./public");
@@ -213,9 +225,9 @@ module.exports.MAJplanning = function (req, res) {
             var headers = buffer.headers;
             var agentsConcernee = [];
             //récupérer la liste des agents dont le planning a été modifier
-            for (var i = 0; i < planningOriginal.length; i++) { 
+            for (var i = 0; i < planningOriginal.length; i++) {
                 var agent = planningOriginal[i];
-                var nvAgent = nvPlanning.find(x => x.matricule ===agent.matricule);
+                var nvAgent = nvPlanning.find(x => x.matricule === agent.matricule);
                 for (var j = 0; j < headers.length; j++) {
                     if (agent[headers[j]] != nvAgent[headers[j]]) {
                         agentsConcernee.push(agent.matricule);
@@ -223,14 +235,36 @@ module.exports.MAJplanning = function (req, res) {
                     }
                 }
             }
-            //envoyer les notifs au agent concernés
-            //to do 
+            //test
+            console.log("liste des agents concernés");
+            for (var i = 0; i < agentsConcernee.length; i++) {
+                console.log(agentsConcernee[i]);
+            }
             //sauvegarder le planning dans la BDD   
-            var newValues = { headers: buffer.headers,planning:buffer.planning };
-            var x=plan.findOneAndUpdate({_id:planningGlobal._id},newValues,{ returnNewDocument: true }).then(function(res,err){
-                    if (err) throw err;
-                    return res;
-            });     
+            var newValues = { headers: buffer.headers, planning: buffer.planning };
+            var x = plan.findOneAndUpdate({ _id: planningGlobal._id }, newValues, { returnNewDocument: true }).then(function (res, err) {
+                if (err) throw err;
+                return res;
+            });
+            //envoyer les notifs au agent concernés
+            const maxNotifId = 9999999;
+            var notificationText = "Votre planning du mois \n" + planningGlobal.mois + "/" + planningGlobal.annee + " a été modifié";
+            var randomInt = require('random-int');
+            var notificationId = randomInt(maxNotifId);
+            var notification = { id: notificationId, text: notificationText };
+            notifierPersonnel(agentsConcernee, notification);
+            // for (var i = 0; i < agentsConcernee.length; i++) {
+            //     var tmp = compte.findOneAndUpdate({ matricule: agentsConcernee[i] }, {$push: {"urgentNotifications": notification,"allNotifications":notification} }, { returnNewDocument: true }).then(function (result, err) {
+            //     if (err) throw err;
+
+            //         var mySocket=socketManager.getSocket(result.matricule);
+            //         console.log("my socket :"+mySocket);
+            //         if ( mySocket){
+            //             socketManager.sendNotification(mySocket,notification);
+            //         }
+            //         return result;
+            //     });
+            // }
         });
 
 
@@ -238,6 +272,20 @@ module.exports.MAJplanning = function (req, res) {
     });
 };
 
+function notifierPersonnel(listeAgent, notification) {
+    for (var i = 0; i < listeAgent.length; i++) {
+        var tmp = compte.findOneAndUpdate({ matricule: listeAgent[i] }, { $push: { "urgentNotifications": notification, "allNotifications": notification } }, { returnNewDocument: true }).then(function (result, err) {
+            if (err) throw err;
+            if (result) {
+                var mySocket = socketManager.getSocket(result.matricule);
+                if (mySocket) {
+                    socketManager.sendNotification(mySocket, notification);
+                }
+            }
+            return result;
+        });
+    }
+};
 
 module.exports.supprimerPlanning = function (req, res) {
     var planning = plan.findOneAndRemove({ annee: req.params.annee, mois: req.params.mois }).then(function (err) {
