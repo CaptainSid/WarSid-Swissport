@@ -133,16 +133,9 @@ module.exports.mProfilAg = function (req, res) {
 
   var z = compteAg.findOne({ _id: req.params.id }).then(function (persone, err) {
     if (persone) {
-
       return persone;
-
-
-
     } else {
-
       res.redirect('/api/echec');
-
-
     }
 
   });

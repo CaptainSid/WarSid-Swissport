@@ -1,173 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Accueil | Agent</title>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/gif/png" href="/api/public/sources/production/images/logo.png">
 
-    <!-- Bootstrap -->
-    <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="/api/public/sources/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="/api/public/sources/vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="/api/public/sources/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-    <!-- Datatables -->
-    <link href="/api/public/sources/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="/api/public/sources/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-    <link href="/api/public/sources/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-    <link href="/api/public/sources/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-    <link href="/api/public/sources/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+  <title>Accueil | Agent</title>
 
-    <!-- Custom Theme Style -->
-    <link href="/api/public/sources/build/css/custom.min.css" rel="stylesheet">
-  </head>
+  <!-- Bootstrap -->
+  <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="/api/public/sources/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <!-- NProgress -->
+  <link href="/api/public/sources/vendors/nprogress/nprogress.css" rel="stylesheet">
+  <!-- iCheck -->
+  <link href="/api/public/sources/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+  <!-- Datatables -->
+  <link href="/api/public/sources/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+  <link href="/api/public/sources/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+  <link href="/api/public/sources/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+  <link href="/api/public/sources/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+  <link href="/api/public/sources/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+  <link rel="shortcut icon" href="/api/public/sources/production/images/logo2.png" type="image/x-icon">     
   
+  <!-- Custom Theme Style -->
+  <link href="/api/public/sources/build/css/custom.min.css" rel="stylesheet">
+</head>
 
-  <body class="nav-md">
-    <!-- pour empêcher l'utilisateur non connecté d'acceder -->
+
+<body class="nav-md">
+  <!-- pour empêcher l'utilisateur non connecté d'acceder -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <script>
-      $(document.body).hide();
-      var show=false;
-      var token = localStorage.getItem('token');
-      if (token != null || token != undefined) {
-          $.ajaxSetup({
-              beforeSend: function (xhr) {
-                  xhr.setRequestHeader('authorization', 'bearer ' + token);
-              }
-          });
+    $(document.body).hide();
+    var show = false;
+    var token = localStorage.getItem('token');
+    if (token != null || token != undefined) {
+      $.ajaxSetup({
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('authorization', 'bearer ' + token);
+        }
+      });
+    }
+
+    $.ajax({
+      type: "GET",
+      url: "/api/token",
+      success: function () {
+        show = true;
+      },
+      error: function () {
+        window.location.replace("/api/login");
+      },
+      async: false
+    })
+
+
+    if (show) {
+      $(document.body).show();
+    }
+  </script>
+  <!-- fin du script d'empêcher l'utilisateur non connecté d'acceder -->
+  <!-- pour la gestion des accès et obtention de la personne connectée -->
+  <script>
+      var logged = JSON.parse(localStorage.getItem('logged'));
+      if (logged.fonction != "Administrateur") {
+        window.location.replace("/api/echec");
       }
-
-                                          $.ajax({
-                                             type: "GET",
-                                             url: "/api/token",
-                                             success:function(){
-                                                  show=true;                                                  
-                                             },
-                                             error: function () {
-                                              window.location.replace("/api/login");                                                  
-                                                    },
-                                                   async:false
-                                        })
-
-    
-      if (show)
-      {
-          $(document.body).show();
-      }                   
   </script>
-<!-- fin du script d'empêcher l'utilisateur non connecté d'acceder -->
-<!-- pour obtenir les informations de l'utilisateur connecté -->
-<script>
-    var logged = JSON.parse(localStorage.getItem('logged'));
-    
-    
-  </script>
-  <!-- fin du script qui déclare la variable pour obtenir les informations de l'utilisateur connecté -->
-    <div class="container body">
-      <div class="main_container">
-        <div class="col-md-3 left_col">
-          <div class="left_col scroll-view">
-            <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"> <span> Swissport ! </span></a>
+  <!-- fin de la gestion des accés -->
+  <div class="container body">
+    <div class="main_container">
+      <div class="col-md-3 left_col">
+        <div class="left_col scroll-view">
+          <div class="navbar nav_title" style="border: 0;">
+            <a href="http://www.swissport.com" class="site_title"><img src="/api/public/sources/production/images/logo2.png" alt="Smiley face" style="float:left;width:42px;height:42px;margin-top:8px;margin-left:25px">  <span>   Swissport </span></a>
+          </div>
+
+          <div class="clearfix"></div>
+
+          <!-- menu profile quick info -->
+          <div class="profile clearfix">
+            <div class="profile_pic">
+              <img src="/api/public/sources/production/images/user.png" alt="..." class="img-circle profile_img">
             </div>
-
-            <div class="clearfix"></div>
-
-            <!-- menu profile quick info -->
-            <div class="profile clearfix">
-              <div class="profile_pic">
-                <img src="/api/public/sources/production/images/user.png" alt="..." class="img-circle profile_img">
-              </div>
-              <div class="profile_info">
-                <span>Bienvenu,</span>
-                <h2> <script type="text/javascript">
+            <div class="profile_info">
+                <span><font color="#bdbdbd" > Bienvenu(e)  </font></span>
+              <h2>
+                <script type="text/javascript">
                   document.write(logged.nom)
                 </script>
                 <script type="text/javascript">
                   document.write(logged.prenom)
-                </script> </h2>
-              </div>
+                </script>
+              </h2>
             </div>
-            <!-- /menu profile quick info -->
-
-            <br />
-
-            <!-- sidebar menu -->
-            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-              <div class="menu_section">
-                <h3>General</h3>
-                <ul class="nav side-menu">
-                  
-                  
-                  
-                  <li><a><i class="fa fa-table"></i> Liste Administrateurs <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      
-                      <li><a href="/api/accueil/Administrateur">  Afficher Administrateurs  </a></li>
-                      <li><a href="/api/registerAd"> Ajouter Administrateur  </a></li>
-                      
-                      
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-table"></i> Liste Planificateurs <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        <li><a href="/api/accueil/Planificateur">Afficher Planificateur </a></li>
-                        <li><a href="/api/registerPl">Ajouter Planificateur</a></li>
-                        
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-table"></i> Liste Agents <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        <li><a href="/api/accueilAg/Agent">Afficher Agent </a></li>
-                        <li><a href="/api/registerAg">Ajouter Agent</a></li>
-                       
-                    </ul>
-                  </li>
-                  
-                </ul>
-              </div>
-              
-
-            </div>
-            <!-- /sidebar menu -->
-
-            <!-- /menu footer buttons -->
-            <div class="sidebar-footer hidden-small">
-              <a data-toggle="tooltip" data-placement="top" title="Settings">
-                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-              </a>
-              <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-              </a>
-              <a data-toggle="tooltip" data-placement="top" title="Lock">
-                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-              </a>
-              <a data-toggle="tooltip" data-placement="top" title="Déconnexion" href="/api/login">
-                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-              </a>
-            </div>
-            <!-- /menu footer buttons -->
           </div>
+          <!-- /menu profile quick info -->
+
+          <br />
+
+          <!-- sidebar menu -->
+          <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+            <div class="menu_section">
+              
+              <ul class="nav side-menu">
+
+
+
+                <li><a><i class="fa fa-table"></i> Liste Administrateurs <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu">
+
+                    <li><a href="/api/accueil/Administrateur">  Afficher Administrateurs  </a></li>
+                    <li><a href="/api/registerAd"> Ajouter Administrateur  </a></li>
+
+
+                  </ul>
+                </li>
+                <li><a><i class="fa fa-table"></i> Liste Planificateurs <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu">
+                    <li><a href="/api/accueil/Planificateur">Afficher Planificateurs </a></li>
+                    <li><a href="/api/registerPl">Ajouter Planificateur</a></li>
+
+                  </ul>
+                </li>
+                <li><a><i class="fa fa-table"></i> Liste Agents <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu">
+                    <li><a href="/api/accueilAg/Agent">Afficher Agents </a></li>
+                    <li><a href="/api/registerAg">Ajouter Agent</a></li>
+                    <li><a href="/api/importerAg">Importer liste Agents</a></li>
+                    
+
+                  </ul>
+                </li>
+
+              </ul>
+            </div>
+
+
+          </div>
+          <!-- /sidebar menu -->
+
+          <!-- /menu footer buttons -->
+          
+          <!-- /menu footer buttons -->
         </div>
+      </div>
 
-        <!-- top navigation -->
-        <div class="top_nav">
-          <div class="nav_menu">
-            <nav>
-              <div class="nav toggle">
-                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-              </div>
+      <!-- top navigation -->
+      <div class="top_nav">
+        <div class="nav_menu">
+          <nav>
+            <div class="nav toggle">
+              <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+            </div>
 
-              <ul class="nav navbar-nav navbar-right">
-                <li class="">
-                  <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <ul class="nav navbar-nav navbar-right">
+              <li class="">
+                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     <img src="/api/public/sources/production/images/user.png" alt=""><script type="text/javascript">
                       document.write(logged.nom)
                     </script>
@@ -176,275 +170,211 @@
                     </script>
                     <span class=" fa fa-angle-down"></span>
                   </a>
-                  <ul class="dropdown-menu dropdown-usermenu pull-right">
-                      <li> <a href="/api/monProfile"> Mon profil </a> </li>
-                    <li>
-                      <a href="javascript:;">
-                        <span class="badge bg-red pull-right">50%</span>
-                        <span>Settings</span>
-                      </a>
-                    </li>
-                    <li><a href="javascript:;">Help</a></li>
-                    <li><a href="/api/login"><i class="fa fa-sign-out pull-right"></i> Déconnexion</a></li>
-                  </ul>
-                </li>
+                <ul class="dropdown-menu dropdown-usermenu pull-right">
+                  <li> <a href="/api/monProfile"> Mon profil </a> </li>
 
-                <li role="presentation" class="dropdown">
-                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-green">6</span>
-                  </a>
-                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                    <li>
-                      <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="text-center">
-                        <a>
-                          <strong>See All Alerts</strong>
-                          <i class="fa fa-angle-right"></i>
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-        <!-- /top navigation -->
-
-        <!-- page content -->
-        <div class="right_col" role="main">
-          <div class="">
-            <div class="page-title">
-              
-
-              <div class="title_left">
-                <h3>Accueil administrateur <small>Bienvenu</small></h3>
-              </div>
-
-              <div class="title_right">
-                  
-                  </div>
-                </div>
-              </div>
-
-            <div class="clearfix"></div>
-
-            <div class="row">
-              <!-- début default example -->
-              <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                        <h2>Liste des agents </h2>
-                    
-                   
-                    
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                    <p class="text-muted font-13 m-b-30">
-                            <button type="button" class="btn btn-success btn-sm"><a href="/api/registerAg"><font color="white" > Ajouter un agent  </font></a></button>
-                        </p>
-                      
-
-                     
-                     
-                   
-                    <!--<button type="button" class="btn btn-success btn-lg">Large Button</button>
-                  </p> -->
-                    <table id="datatable" class="table table-striped table-bordered">
-                        
-                        
-                      <thead>
-                          
-                        <tr>
-                            
-                          <th>ID</th>
-                          <th>Matricule</th>
-                          <th>Nom</th>
-                          <th>Prénom</th>
-                          <th>Email</th>
-                          <th>Fonction</th>
-                          <th>Afficher</th>
-                          <th>Modifier</th>
-                          <th>Supprimer</th>
-                        </tr>
-                      </thead>
-                     
-
-                      <tbody>
-                          <% for(var i=0;i<personAg.length;i++){ %>
-                              <tr>
-                                  <td> <%= personAg[i]._id %></td>
-                                  <td> <%= personAg[i].matricule %></td>
-                                  <td> <%= personAg[i].nom %></td>
-                                  <td><%= personAg[i].prenom %></td>
-                                  <td><%= personAg[i].email %></td>
-                                  <td><%= personAg[i].fonction %></td>
-                                  
-                                  <td ><a href="/api/profileAg/<%= personAg[i]._id %>" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Afficher</a> </td>
-                                  <td> <a href="/api/modifProfilAg/<%= personAg[i]._id %>" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Modifier </a> </td>
-                                  
-
-                                  
-                                  
-                                 <td> <button  class="btn btn-danger btn-xs"   name="<%= personAg[i]._id %>"><i class="fa fa-trash-o"></i> Supprimer </button> </td>
-                                 <!-- la méthode delete -->
-                                                                      
-                                 <script>
-                                    
-                                        $('.btn-danger').on('click', function (event) {
-                                            event.preventDefault();
-                                            var user_choice = window.confirm('Voulez-vous vraiment supprimer cet élément ? ');
-                                  if (user_choice == true) {
-                                            
-                                            var id= $(this).attr('name');
-                              
-                                            $.ajax({
-                                                type: 'DELETE',
-                                                url: '/api/supprimerProfilAg/'+id,
-                                                success:function(data){   
-                                                        location.reload();  
-                                                    }                  
-                                            })
-                                          }
-                                          else {
-                                            return false;
-                                          }
-                                        });
-                                   
-                                </script>
-                                <!-- fin de la méthode delete -->   
-                                         
-                                </tr>
-                              
-                              <% } %>
-                        
-                        
-                       
-                       
-                  
-                        
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <!-- fin défault example -->
-
-
-
-              <!-- début table design -->
+                  <li><a href="/api/login"><i class="fa fa-sign-out pull-right"></i> Déconnexion</a></li>
+                </ul>
+              </li>
 
               
-
-           
-          </div>
+            </ul>
+          </nav>
         </div>
-        <!-- /page content -->
-
-        <!-- footer content -->
-        <footer>
-          <div class="pull-right">
-              Swissport 2017 - <a href="https://swissport.com">Swissport</a>
-          </div>
-          <div class="clearfix"></div>
-        </footer>
-        <!-- /footer content -->
       </div>
+      <!-- /top navigation -->
+
+      <!-- page content -->
+      <div class="right_col" role="main">
+        <div class="">
+          <div class="page-title">
+
+
+            <div class="title_left">
+                <h3><font color="#be302d" > Liste des comptes </font> <small></small></h3>
+            </div>
+
+            <div class="title_right">
+
+            </div>
+          </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+          <!-- début default example -->
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>Agents </h2>
+
+
+
+                <ul class="nav navbar-right panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                 
+                  <li><a class="close-link"><i class="fa fa-close"></i></a>
+                  </li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <!--début x_content-->
+              <div class="x_content">
+                <p class="text-muted font-13 m-b-30">
+                  <button type="button" class="btn btn-success btn-sm"><a href="/api/registerAg"><font color="white" > Ajouter un agent  </font></a></button>
+                </p>
+
+
+
+
+
+                <!--<button type="button" class="btn btn-success btn-lg">Large Button</button>
+                  </p> -->
+                <table id="datatable" class="table table-striped table-bordered">
+
+
+                  <thead>
+
+                    <tr>
+
+                      <th>ID</th>
+                      <th>Matricule</th>
+                      <th>Nom</th>
+                      <th>Prénom</th>
+                      <th>Email</th>
+                      <th>Fonction</th>
+                      <th>Afficher</th>
+                      <th>Modifier</th>
+                      <th>Supprimer</th>
+                    </tr>
+                  </thead>
+
+
+                  <tbody>
+                    <% for(var i=0;i<personAg.length;i++){ %>
+                      <tr>
+                        <td>
+                          <%= personAg[i]._id %>
+                        </td>
+                        <td>
+                          <%= personAg[i].matricule %>
+                        </td>
+                        <td>
+                          <%= personAg[i].nom %>
+                        </td>
+                        <td>
+                          <%= personAg[i].prenom %>
+                        </td>
+                        <td>
+                          <%= personAg[i].email %>
+                        </td>
+                        <td>
+                          <%= personAg[i].fonction %>
+                        </td>
+
+                        <td><a href="/api/profileAg/<%= personAg[i]._id %>" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Afficher</a>                          </td>
+                        <td> <a href="/api/modifProfilAg/<%= personAg[i]._id %>" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Modifier </a>                          </td>
+
+
+
+
+                        <td> <button class="btn btn-danger btn-xs" name="<%= personAg[i]._id %>"><i class="fa fa-trash-o"></i> Supprimer </button>                          </td>
+                        <!-- la méthode delete -->
+
+                        <script>
+                          $('.btn-danger').on('click', function (event) {
+                            event.preventDefault();
+                            var user_choice = window.confirm('Voulez-vous vraiment supprimer cet élément ? ');
+                            if (user_choice == true) {
+
+                              var id = $(this).attr('name');
+
+                              $.ajax({
+                                type: 'DELETE',
+                                url: '/api/supprimerProfilAg/' + id,
+                                success: function (data) {
+                                  location.reload();
+                                }
+                              })
+                            }
+                            else {
+                              return false;
+                            }
+                          });
+                        </script>
+                        <!-- fin de la méthode delete -->
+
+                      </tr>
+
+                      <% } %>
+
+
+
+
+
+
+                  </tbody>
+                </table>
+              </div>
+              <!-- fin x_content-->
+            </div>
+          </div>
+          <!-- fin défault example -->
+
+
+
+          <!-- début table design -->
+
+
+
+
+        </div>
+      </div>
+      <!-- /page content -->
+
+      <!-- footer content -->
+      <footer>
+        <div class="pull-right">
+          Swissport 2017 - <a href="https://swissport.com">Swissport</a>
+        </div>
+        <div class="clearfix"></div>
+      </footer>
+      <!-- /footer content -->
     </div>
+  </div>
 
-    <!-- jQuery -->
-    <script src="/api/public/sources/vendors/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="/api/public/sources/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- FastClick -->
-    <script src="/api/public/sources/vendors/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="/api/public/sources/vendors/nprogress/nprogress.js"></script>
-    <!-- iCheck -->
-    <script src="/api/public/sources/vendors/iCheck/icheck.min.js"></script>
-    <!-- Datatables -->
-    <script src="/api/public/sources/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="/api/public/sources/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-    <script src="/api/public/sources/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="/api/public/sources/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-    <script src="/api/public/sources/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
-    <script src="/api/public/sources/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
-    <script src="/api/public/sources/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="/api/public/sources/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-    <script src="/api/public/sources/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-    <script src="/api/public/sources/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="/api/public/sources/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-    <script src="/api/public/sources/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
-    <script src="/api/public/sources/vendors/jszip/dist/jszip.min.js"></script>
-    
-    
+  <!-- jQuery -->
+  <script src="/api/public/sources/vendors/jquery/dist/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/api/public/sources/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!-- FastClick -->
+  <script src="/api/public/sources/vendors/fastclick/lib/fastclick.js"></script>
+  <!-- NProgress -->
+  <script src="/api/public/sources/vendors/nprogress/nprogress.js"></script>
+  <!-- iCheck -->
+  <script src="/api/public/sources/vendors/iCheck/icheck.min.js"></script>
+  <!-- Datatables -->
+  <script src="/api/public/sources/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="/api/public/sources/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+  <script src="/api/public/sources/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="/api/public/sources/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+  <script src="/api/public/sources/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+  <script src="/api/public/sources/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+  <script src="/api/public/sources/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+  <script src="/api/public/sources/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+  <script src="/api/public/sources/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+  <script src="/api/public/sources/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/api/public/sources/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+  <script src="/api/public/sources/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+  <script src="/api/public/sources/vendors/jszip/dist/jszip.min.js"></script>
 
-    <!-- Custom Theme Scripts -->
-    <script src="/api/public/sources/build/js/custom.min.js"></script>
 
-  </body>
+
+  <!-- Custom Theme Scripts -->
+  <script src="/api/public/sources/build/js/custom.min.js"></script>
+
+</body>
+
 </html>

@@ -35,6 +35,18 @@ router.route('/accueil/:fonction').get(function (req, res) {
         
         });
     });
+    router.route('/listeAgPl/:fonction').get(function (req, res) {
+        
+        
+        
+        // la personne demandé //
+        accueilCtrl.accueilAg(req,res).then((personAg)=>{
+    
+    
+            res.render('listeAgentPl',{personAg });
+        
+        });
+    });
 
     // la personne connectée 
    /* authCtrl.login(req,res.json).then((personLoged)=>{

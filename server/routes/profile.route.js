@@ -42,10 +42,32 @@ router.route('/profileAg/:id').get(function (req, res) {
 
 });
 
+/* profile agent pour planificateur */
+router.route('/profileAgPl/:id').get(function (req, res) {
+    
+    
+    
+    
+    profCtrl.profileAg(req,res).then((personAg)=>{
 
-/* mon profil */
-router.route('/monProfile').get(function (req, res) {
-    res.render('monProfile');
+
+        res.render('profileAgPl',{personAg });
+    
+    });
+    
+    
+    
+  
+});
+
+    /* mon profil administrateur */ 
+    router.route('/monProfile').get(function(req,res){
+        res.render('monProfile');
+    });
+    
+  /* mon profil planificateur */
+  router.route('/monProfilePl').get(function(req,res){
+    res.render('monProfilePl');
 });
 
 

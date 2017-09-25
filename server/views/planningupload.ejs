@@ -6,6 +6,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/gif/png" href="/api/public/sources/production/images/logo.png">
+    
     <title>Ajouter un planning</title>
     <!-- Bootstrap -->
     <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -22,11 +24,14 @@
     <!-- bootstrap-daterangepicker -->
     <link href="/api/public/sources/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
     <!-- Custom Theme Style -->
-    <link href="/api/public/sources/build/css/custom.min.css" rel="stylesheet">
+    <link href="/api/public/sources/build/css/custom.min2.css" rel="stylesheet">
+    <link rel="shortcut icon" href="/api/public/sources/production/images/logo2.png" type="image/x-icon">     
+    
 </head>
 
 <body class="nav-md">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <!-- pour la gestion des accès et obtention de la personne connectée -->
     <script>
         $(document.body).hide();
         var show = false;
@@ -56,20 +61,30 @@
             $(document.body).show();
         }
     </script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-var socket = io.connect('http://localhost:3000',{query: 'fonction=Plannificateur'});
-    socket.on('messages',function(message){
-        $.toaster({ priority : 'danger', title : 'Nouveau Message', message : message});
-        socket.emit('messageRecu',message);
-    })
+      <script>
+        var logged = JSON.parse(localStorage.getItem('logged'));
+        if (logged.fonction != "Planificateur") {
+            window.location.replace("/api/echec");
+        }
     </script>
+    <!-- fin de la gestion des accés -->
+            <script src="/socket.io/socket.io.js"></script>
+            <script>
+                socket = io.connect('http://localhost:3000', { query: 'fonction='+logged.fonction });
+                socket.emit('viewAllMessages');
+                socket.on('messages', function (newMessage) {
+                    $.toaster({ priority: 'danger', title: 'Nouveau Message', message: newMessage.text });
+                    socket.emit('messageRecu', newMessage);
+                    // mise à jour des derniers messages
+                    socket.emit('viewAllMessages'); 
+                })
+            </script>
     <div class="container body">
         <div class="main_container">
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
-                        <a href="" class="site_title"><i class="fa fa-paw"></i> <span>Swissport</span></a>
+                        <a href="http://www.swissport.com" class="site_title"><img src="/api/public/sources/production/images/logo2.png" alt="Smiley face" style="float:left;width:42px;height:42px;margin-top:8px;margin-left:25px">  <span>   Swissport </span></a>
                     </div>
                     <div class="clearfix"></div>
                     <!-- menu profile quick info -->
@@ -78,8 +93,15 @@ var socket = io.connect('http://localhost:3000',{query: 'fonction=Plannificateur
                             <img src="/api/public/sources/production/images/user.png" alt="..." class="img-circle profile_img">
                         </div>
                         <div class="profile_info">
-                            <span>Welcome,</span>
-                            <h2>John Doe</h2>
+                                <span><font color="#bdbdbd" > Bienvenu(e)  </font></span>
+                            <h2>
+                                <script type="text/javascript">
+                                    document.write(logged.nom)
+                                </script>
+                                <script type="text/javascript">
+                                    document.write(logged.prenom)
+                                </script>
+                            </h2>
                         </div>
                     </div>
                     <!-- /menu profile quick info -->
@@ -92,26 +114,19 @@ var socket = io.connect('http://localhost:3000',{query: 'fonction=Plannificateur
                                 </li>
                                 <li><a href="/api/upload"><i class="fa fa-edit"></i> Ajouter un Planning </a>
                                 </li>
-                                <li><a href="/api/accueilAg/Agent"><i class="fa fa-desktop"></i> Liste des agents</a>
+                                <li><a href="/api/ajouterShift"><i class="fa fa-edit"></i> Ajouter des Shifts </a>
                                 </li>
+                                <li><a href="/api/listeShift"><i class="fa fa-desktop"></i> Liste des Shifts</a>
+                                </li>
+                                
+                                <li><a href="/api/listeAgPl/Agent"><i class="fa fa-desktop"></i> Liste des agents</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <!-- /sidebar menu -->
                     <!-- /menu footer buttons -->
-                    <div class="sidebar-footer hidden-small">
-                        <a data-toggle="tooltip" data-placement="top" title="Settings">
-                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-              </a>
-                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-              </a>
-                        <a data-toggle="tooltip" data-placement="top" title="Lock">
-                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-              </a>
-                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
-                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-              </a>
-                    </div>
+
                     <!-- /menu footer buttons -->
                 </div>
             </div>
@@ -125,81 +140,52 @@ var socket = io.connect('http://localhost:3000',{query: 'fonction=Plannificateur
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="/api/public/sources/production/images/user.png" alt="">John Doe
+                    <img src="/api/public/sources/production/images/user.png" alt=""><script type="text/javascript">
+                                    document.write(logged.nom)
+                    </script>
+                      <script type="text/javascript">
+                                    document.write(logged.prenom)
+                    </script>
                     <span class=" fa fa-angle-down"></span>
                   </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                    <li><a href="javascript:;"> Profile</a></li>
-                                    <li>
-                                        <a href="javascript:;">
-                        <span class="badge bg-red pull-right">50%</span>
-                        <span>Settings</span>
-                      </a>
-                                    </li>
-                                    <li><a href="javascript:;">Help</a></li>
-                                    <li><a href="/api/login"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                                    <li> <a href="/api/monProfilePl"> Mon profil </a> </li>
+
+
+                                    <li><a href="/api/login"><i class="fa fa-sign-out pull-right"></i> Déconnexion</a></li>
                                 </ul>
                             </li>
                             <li role="presentation" class="dropdown">
                                 <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-green">6</span>
-                  </a>
-                                <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                                    <li>
-                                        <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                                    </li>
-                                    <li>
-                                        <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                                    </li>
-                                    <li>
-                                        <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                                    </li>
-                                    <li>
-                                        <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                                    </li>
+                    <script>
+                        socket.on('allMessages',function(messages){
+                            var myMessages=document.getElementById("myMessages");
+                            myMessages.innerHTML='<div id="myMessages"></div>'
+                            var  NbmsgToDisplay=6;
+                            if (NbmsgToDisplay >messages.length){
+                                NbmsgToDisplay=messages.length;
+                            }
+                                for (var i=0;i<NbmsgToDisplay;i++){
+                                    myMessages.innerHTML +='<div id="myMessages"><li><a><span class="message">'+ messages[i].text+' </span> </a></li></div>'
+                            }
+                            var nb=document.getElementById('nbMsg');
+                            var x=messages.length;
+                            nb.innerHTML += ' <span class="badge bg-green" >'+x+'</span>'
+                        });
+                        </script>
+                        <div id="nbMsg"></div>
+              </a>
+                            <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">                           
+             
+                            <div id="myMessages"></div>
+
                                     <li>
                                         <div class="text-center">
-                                            <a>
-                          <strong>See All Alerts</strong>
-                          <i class="fa fa-angle-right"></i>
-                        </a>
+                                            <a href="/api/listeMessage">
+                                                <strong>Voir tous les messages</strong>
+                                                <i class="fa fa-angle-right"></i>
+                                            </a>
                                         </div>
                                     </li>
                                 </ul>
@@ -211,28 +197,48 @@ var socket = io.connect('http://localhost:3000',{query: 'fonction=Plannificateur
             <!-- /top navigation -->
             <!-- page content -->
             <script>
-                function checkExtension() {
-                    var f = document.getElementById('planning');
-                    var fileName = f.value;
-                    var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
-                    ext = ext.toLowerCase();
-                    if (ext != "csv") {
-                        document.getElementById('planning').value = '';
-                        document.getElementById("send").disabled = true;
-                        alert("Attention ! vous devez importer des fichier .csv uniquement");
-                    }
-                    else {
-                        document.getElementById("send").disabled = false;
-                    }
+                                    function checkExtension() {
+                                        var f = document.getElementById('planning');
+                                        var fileName = f.value;
+                                        var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+                                        ext = ext.toLowerCase();
+                                        if (ext != "csv") {
+                                            document.getElementById('planning').value = '';
+                                            document.getElementById("send").disabled = true;
+                                            alert("Attention ! vous devez importer des fichier .csv uniquement");
+                                        }
+                                        else {
+                                            document.getElementById("send").disabled = false;
+                                        }
 
-                }
+                                    }
             </script>
             <div class="right_col" role="main">
                 <div class="">
+                    <div class="page-title">
+                        <div class="title_left">
+                                <h3><font color="#be302d" > Ajouter un planning </font> <small></small></h3>
+                        </div>
+
+
+                    </div>
                     <div class="clearfix"></div>
                     <div class="row">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
+                                <!-- début title -->
+                                <div class="x_title">
+                                    <h2>Importer un fichier CSV <small></small></h2>
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+
+                                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <!-- fin title -->
                                 <div class="x_content">
                                     <br />
                                     <form id="upload_form" enctype="multipart/form-data" class="form-horizontal form-label-left" method="POST" action="/api/upload">
@@ -286,7 +292,7 @@ var socket = io.connect('http://localhost:3000',{query: 'fonction=Plannificateur
             <!-- footer content -->
             <footer>
                 <div class="pull-right">
-                    This product is made for <a href="http://swissport.com/">Swissport</a>
+                    Swissport 2017 - <a href="https://swissport.com">Swissport</a>
                 </div>
                 <div class="clearfix"></div>
             </footer>
@@ -305,11 +311,10 @@ var socket = io.connect('http://localhost:3000',{query: 'fonction=Plannificateur
     <script src="/api/public/sources/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
     <!-- iCheck -->
     <script src="/api/public/sources/vendors/iCheck/icheck.min.js"></script>
-
-    <!-- Custom Theme Scripts -->
-    <script src="/api/public/sources/build/js/custom.min.js"></script>
     <script src="/api/public/sources/jquery.toaster.js"></script>
     
+    <!-- Custom Theme Scripts -->
+    <script src="/api/public/sources/build/js/custom.min.js"></script>
 </body>
 
 </html>

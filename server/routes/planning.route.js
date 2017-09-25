@@ -3,6 +3,7 @@ import validate from 'express-validation';
 import paramValidation from '../../config/param-validation';
 import planCtrl from '../controllers/plannning.ctrl';
 import authCtrl from '../controllers/authentification.ctrl';
+import msgCtrl from '../controllers/message.ctrl';
 import config from '../../config/config';
 
 const router = express.Router(); // eslint-disable-line new-cap
@@ -13,6 +14,25 @@ router.route('/listePlanning').get(function (req, res) {
     planCtrl.getAllPlanning(req, res).then(function (plan) {
         res.render('listePlanning', { plan });
     });
+});
+router.route('/ajouterShift').get(function (req, res) {
+    res.render('ajouterShift');
+});
+router.route('/listeShift').get(function (req, res) {
+    res.render('afficherShift');
+});
+router.route('/listeMessage').get(function (req, res) {
+    msgCtrl.getAllMessages(req, res).then(function (msg) {
+        res.render('tousMessages', { messages:msg });
+    });
+});
+router.route('/supprimerMessage/:id').delete(function (req, res) {
+    msgCtrl.supprimerMessage(req, res).then((err) => {
+        res.status('200').send();
+    });
+});
+router.route('/importerAg').get(function (req, res) {
+    res.render('importerAgents');
 });
 
 router.route('/upload').get(function (req, res) {

@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/gif/png" href="/api/public/sources/production/images/logo.png">
-    <title>Modifier un planning</title>
+    
+    <title>Ajouter Shifts</title>
     <!-- Bootstrap -->
     <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -25,7 +26,6 @@
     <!-- Custom Theme Style -->
     <link href="/api/public/sources/build/css/custom.min2.css" rel="stylesheet">
     <link rel="shortcut icon" href="/api/public/sources/production/images/logo2.png" type="image/x-icon">     
-    
 </head>
 
 <body class="nav-md">
@@ -59,17 +59,17 @@
             $(document.body).show();
         }
     </script>
-       <!-- pour la gestion des accès et obtention de la personne connectée -->
-       <script>
-        var logged = JSON.parse(localStorage.getItem('logged'));
-        if (logged.fonction != "Planificateur") {
-            window.location.replace("/api/echec");
-        }
-    </script>
-    <!-- fin de la gestion des accés -->
+        <!-- pour la gestion des accès et obtention de la personne connectée -->
+        <script>
+            var logged = JSON.parse(localStorage.getItem('logged'));
+            if (logged.fonction != "Planificateur") {
+                window.location.replace("/api/echec");
+            }
+        </script>
+        <!-- fin de la gestion des accés -->
             <script src="/socket.io/socket.io.js"></script>
             <script>
-                socket = io.connect('http://localhost:3000', { query: 'fonction='+logged.fonction });
+                socket = io.connect('http://localhost:3000', { query: 'fonction='+logged.fonction});
                 socket.emit('viewAllMessages');
                 socket.on('messages', function (newMessage) {
                     $.toaster({ priority: 'danger', title: 'Nouveau Message', message: newMessage.text });
@@ -78,7 +78,6 @@
                     socket.emit('viewAllMessages'); 
                 })
             </script>
- 
     <div class="container body">
         <div class="main_container">
             <div class="col-md-3 left_col">
@@ -117,14 +116,16 @@
                                 <li><a href="/api/ajouterShift"><i class="fa fa-edit"></i> Ajouter des Shifts </a>
                                 </li>
                                 <li><a href="/api/listeShift"><i class="fa fa-desktop"></i> Liste des Shifts</a>
-                                </li>     
+                                </li>
+                                
                                 <li><a href="/api/listeAgPl/Agent"><i class="fa fa-desktop"></i> Liste des agents</a>
                                 </li>
+                            </ul>
                         </div>
                     </div>
                     <!-- /sidebar menu -->
                     <!-- /menu footer buttons -->
-                   
+
                     <!-- /menu footer buttons -->
                 </div>
             </div>
@@ -181,9 +182,9 @@
                                     <li>
                                         <div class="text-center">
                                             <a href="/api/listeMessage">
-                                  <strong>Voir tous les messages</strong>
-                                  <i class="fa fa-angle-right"></i>
-                              </a>
+                                                <strong>Voir tous les messages</strong>
+                                                <i class="fa fa-angle-right"></i>
+                                            </a>
                                         </div>
                                     </li>
                                 </ul>
@@ -195,53 +196,51 @@
             <!-- /top navigation -->
             <!-- page content -->
             <script>
-                        function checkExtension() {
-                            var f = document.getElementById('planning');
-                            var fileName = f.value;
-                            var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
-                            ext = ext.toLowerCase();
-                            if (ext != "csv") {
-                                document.getElementById('planning').value = '';
-                                document.getElementById("send").disabled = true;
-                                alert("Attention ! vous devez importer des fichier .csv uniquement");
-                            }
-                            else {
-                                document.getElementById("send").disabled = false;
-                            }
+                                    function checkExtension() {
+                                        var f = document.getElementById('shift');
+                                        var fileName = f.value;
+                                        var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+                                        ext = ext.toLowerCase();
+                                       
+                                        
+                                            document.getElementById("send").disabled = false;
+                                        
 
-                        }
+                                    }
             </script>
             <div class="right_col" role="main">
                 <div class="">
-                        <div class="page-title">
-                                <div class="title_left">
-                                        <h3><font color="#be302d" > Modifier un planning </font> <small></small></h3>
-                                </div>
-        
-        
-                            </div>
+                    <div class="page-title">
+                        <div class="title_left">
+                                <h3><font color="#be302d" > Ajouter des shifts </font> <small></small></h3>
+                        </div>
+
+
+                    </div>
                     <div class="clearfix"></div>
                     <div class="row">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
-                                 <!-- début title -->
-                                 <div class="x_title">
-                                        <h2>Importer le nouveau fichier CSV <small></small></h2>
-                                        <ul class="nav navbar-right panel_toolbox">
-                                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                            </li>
-    
-                                            <li><a class="close-link"><i class="fa fa-close"></i></a>
-                                            </li>
-                                        </ul>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <!-- fin title -->
+                                <!-- début title -->
+                                <div class="x_title">
+                                    <h2>Importer un fichier de shifts <small></small></h2>
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+
+                                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <!-- fin title -->
                                 <div class="x_content">
                                     <br />
-                                    <form id="upload_form" enctype="multipart/form-data" class="form-horizontal form-label-left" method="POST" action="/api/MAJPlanning/<%=data.annee%>/<%=data.mois%>">
+                                    <form id="upload_form" enctype="multipart/form-data" class="form-horizontal form-label-left" method="POST" action="/api/upload">
+                                       
+                                       
                                         <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="planning">Planning.csv <span class="required">*</span>
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="planning"> Fichier des Shifts <span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
                                                 <input type="file" id="planning" name="planning" onchange="checkExtension();">
@@ -283,7 +282,9 @@
     <script src="/api/public/sources/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
     <!-- iCheck -->
     <script src="/api/public/sources/vendors/iCheck/icheck.min.js"></script>
-    <script src="/api/public/sources/jquery.toaster.js"></script>    
+    <script src="/api/public/sources/jquery.toaster.js"></script>
+    
+
     <!-- Custom Theme Scripts -->
     <script src="/api/public/sources/build/js/custom.min.js"></script>
 </body>

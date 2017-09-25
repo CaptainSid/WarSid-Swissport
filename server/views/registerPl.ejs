@@ -1,370 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title> Ajouter compte| Planificateur| </title>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/gif/png" href="/api/public/sources/production/images/logo.png">
 
-    <!-- Bootstrap -->
-    <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="/api/public/sources/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-   <link href="/api/public/sources/vendors/nprogress/nprogress.css" rel="stylesheet">
-    
-    <!-- Custom Theme Style -->
-    
+  <title> Ajouter compte | Planificateur </title>
 
-    <link href="/api/public/sources/build/css/custom.min.css" rel="stylesheet" type="text/css" >
-    <!-- iCheck -->
-    <link href="/api/public/sources/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-  </head>
+  <!-- Bootstrap -->
+  <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="/api/public/sources/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <!-- NProgress -->
+  <link href="/api/public/sources/vendors/nprogress/nprogress.css" rel="stylesheet">
 
-  <body class="nav-md">
-     <!-- pour empêcher l'utilisateur non connecté d'acceder -->
+  <!-- Custom Theme Style -->
+
+
+  <link href="/api/public/sources/build/css/custom.min.css" rel="stylesheet" type="text/css">
+  <!-- iCheck -->
+  <link href="/api/public/sources/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+  <link rel="shortcut icon" href="/api/public/sources/production/images/logo2.png" type="image/x-icon">     
+  
+</head>
+
+<body class="nav-md">
+  <!-- pour empêcher l'utilisateur non connecté d'acceder -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <script>
-      $(document.body).hide();
-      var show=false;
-      var token = localStorage.getItem('token');
-      if (token != null || token != undefined) {
-          $.ajaxSetup({
-              beforeSend: function (xhr) {
-                  xhr.setRequestHeader('authorization', 'bearer ' + token);
-              }
-          });
-      }
+    $(document.body).hide();
+    var show = false;
+    var token = localStorage.getItem('token');
+    if (token != null || token != undefined) {
+      $.ajaxSetup({
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('authorization', 'bearer ' + token);
+        }
+      });
+    }
 
-                                          $.ajax({
-                                             type: "GET",
-                                             url: "/api/token",
-                                             success:function(){
-                                                  show=true;                                                  
-                                             },
-                                             error: function () {
-                                              window.location.replace("/api/login");                                                  
-                                                    },
-                                                   async:false
-                                        })
+    $.ajax({
+      type: "GET",
+      url: "/api/token",
+      success: function () {
+        show = true;
+      },
+      error: function () {
+        window.location.replace("/api/login");
+      },
+      async: false
+    })
 
-    
-      if (show)
-      {
-          $(document.body).show();
-      }                   
+
+    if (show) {
+      $(document.body).show();
+    }
   </script>
-<!-- fin du script d'empêcher l'utilisateur non connecté d'acceder -->
-<!-- pour obtenir les informations de l'utilisateur connecté -->
-<script>
+  <!-- fin du script d'empêcher l'utilisateur non connecté d'acceder -->
+  <!-- pour la gestion des accès et obtention de la personne connectée -->
+  <script>
     var logged = JSON.parse(localStorage.getItem('logged'));
-    
-    
+    if (logged.fonction != "Administrateur") {
+      window.location.replace("/api/echec");
+    }
   </script>
-  <!-- fin du script qui déclare la variable pour obtenir les informations de l'utilisateur connecté -->
-    <div class="container body">
-      <div class="main_container">
-        <div class="col-md-3 left_col">
-          <div class="left_col scroll-view">
-            <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><!--<i class="fa fa-paw"></i> --><span>Swissport!</span></a>
-            </div>
-
-            <div class="clearfix"></div>
-
-            <!-- menu profile quick info -->
-            <div class="profile clearfix">
-              <div class="profile_pic">
-                <img src="/api/public/sources/production/images/user.png" alt="..." class="img-circle profile_img">
-              </div>
-              <div class="profile_info">
-                <span>Bienvenu,</span>
-                <h2> <script type="text/javascript">
-                  document.write(logged.nom)
-                </script> <script type="text/javascript">
-              document.write(logged.prenom)
-            </script></h2>
-              </div>
-            </div>
-            <!-- /menu profile quick info -->
-
-            <br />
-
-            <!-- sidebar menu -->
-            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-                <div class="menu_section">
-                  <h3>General</h3>
-                  <ul class="nav side-menu">
-                    
-                    
-                    
-                    <li><a><i class="fa fa-table"></i> Liste Administrateurs <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        
-                        <li><a href="/api/accueil/Administrateur">Afficher Administrateurs</a></li>
-                        <li><a href="/api/registerAd">Ajouter Administrateur</a></li>
-                        
-                        
-                      </ul>
-                    </li>
-                    <li><a><i class="fa fa-table"></i> Liste Planificateurs <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                          <li><a href="/api/accueil/Planificateur">Afficher Planificateur </a></li>
-                          <li><a href="/api/registerPl">Ajouter Planificateur</a></li>
-                          
-                      </ul>
-                    </li>
-                    <li><a><i class="fa fa-table"></i> Liste Agents <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                          <li><a href="/api/accueilAg/Agent">Afficher Agent </a></li>
-                          <li><a href="/api/registerAg">Ajouter Agent</a></li>
-                         
-                      </ul>
-                    </li>
-                    
-                  </ul>
-                </div>
-                
-  
-              </div>
-            <!-- /sidebar menu -->
-
-            <!-- /menu footer buttons -->
-            <div class="sidebar-footer hidden-small">
-              <a data-toggle="tooltip" data-placement="top" title="Settings">
-                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-              </a>
-              <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-              </a>
-              <a data-toggle="tooltip" data-placement="top" title="Lock">
-                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-              </a>
-              <a data-toggle="tooltip" data-placement="top" title="Déconnexion" href="/api/login">
-                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-              </a>
-            </div>
-            <!-- /menu footer buttons -->
+  <!-- fin de la gestion des accés -->
+  <div class="container body">
+    <div class="main_container">
+      <div class="col-md-3 left_col">
+        <div class="left_col scroll-view">
+          <div class="navbar nav_title" style="border: 0;">
+            <a href="http://www.swissport.com" class="site_title"><img src="/api/public/sources/production/images/logo2.png" alt="Smiley face" style="float:left;width:42px;height:42px;margin-top:8px;margin-left:25px">  <span>   Swissport </span></a>
           </div>
+
+          <div class="clearfix"></div>
+
+          <!-- menu profile quick info -->
+          <div class="profile clearfix">
+            <div class="profile_pic">
+              <img src="/api/public/sources/production/images/user.png" alt="..." class="img-circle profile_img">
+            </div>
+            <div class="profile_info">
+                <span><font color="#bdbdbd" > Bienvenu(e)  </font></span>
+              <h2>
+                <script type="text/javascript">
+                  document.write(logged.nom)
+                </script>
+                <script type="text/javascript">
+                  document.write(logged.prenom)
+                </script>
+              </h2>
+            </div>
+          </div>
+          <!-- /menu profile quick info -->
+
+          <br />
+
+          <!-- sidebar menu -->
+          <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+            <div class="menu_section">
+              
+              <ul class="nav side-menu">
+
+
+
+                <li><a><i class="fa fa-table"></i> Liste Administrateurs <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu">
+
+                    <li><a href="/api/accueil/Administrateur">Afficher Administrateurs</a></li>
+                    <li><a href="/api/registerAd">Ajouter Administrateur</a></li>
+
+
+                  </ul>
+                </li>
+                <li><a><i class="fa fa-table"></i> Liste Planificateurs <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu">
+                    <li><a href="/api/accueil/Planificateur">Afficher Planificateurs </a></li>
+                    <li><a href="/api/registerPl">Ajouter Planificateur</a></li>
+
+                  </ul>
+                </li>
+                <li><a><i class="fa fa-table"></i> Liste Agents <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu">
+                    <li><a href="/api/accueilAg/Agent">Afficher Agents </a></li>
+                    <li><a href="/api/registerAg">Ajouter Agent</a></li>
+                    <li><a href="/api/importerAg">Importer liste Agents</a></li>
+                    
+
+                  </ul>
+                </li>
+
+              </ul>
+            </div>
+
+
+          </div>
+          <!-- /sidebar menu -->
+
+          <!-- /menu footer buttons -->
+          
+          <!-- /menu footer buttons -->
         </div>
+      </div>
 
-        <!-- top navigation -->
-        <div class="top_nav">
-          <div class="nav_menu">
-            <nav>
-              <div class="nav toggle">
-                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-              </div>
+      <!-- top navigation -->
+      <div class="top_nav">
+        <div class="nav_menu">
+          <nav>
+            <div class="nav toggle">
+              <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+            </div>
 
-              <ul class="nav navbar-nav navbar-right">
-                <li class="">
-                  <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <ul class="nav navbar-nav navbar-right">
+              <li class="">
+                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     <img src="/api/public/sources/production/images/user.png" alt=""> <script type="text/javascript">
                       document.write(logged.nom)
                     </script> <script type="text/javascript">
-                  document.write(logged.prenom)
-                </script>
+                      document.write(logged.prenom)
+                    </script>
                     <span class=" fa fa-angle-down"></span>
                   </a>
-                  <ul class="dropdown-menu dropdown-usermenu pull-right">
-                      <li> <a href="/api/monProfile"> Mon profil </a> </li>
-                    <li>
-                      <a href="javascript:;">
-                        <span class="badge bg-red pull-right">50%</span>
-                        <span>Settings</span>
-                      </a>
-                    </li>
-                    <li><a href="javascript:;">Help</a></li>
-                    <li><a href="/api/login"><i class="fa fa-sign-out pull-right"></i> Déconnexion </a></li>
-                  </ul>
-                </li>
+                <ul class="dropdown-menu dropdown-usermenu pull-right">
+                  <li> <a href="/api/monProfile"> Mon profil </a> </li>
 
-                <li role="presentation" class="dropdown">
-                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-green">6</span>
-                  </a>
-                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                    <li>
-                      <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="image"><img src="/api/public/sources/production/images/user.png" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="text-center">
-                        <a>
-                          <strong>See All Alerts</strong>
-                          <i class="fa fa-angle-right"></i>
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </nav>
-          </div>
+
+                  <li><a href="/api/login"><i class="fa fa-sign-out pull-right"></i> Déconnexion </a></li>
+                </ul>
+              </li>
+
+            </ul>
+          </nav>
         </div>
-        <!-- /top navigation -->
+      </div>
+      <!-- /top navigation -->
 
-        <!-- page content -->
-        <div class="right_col" role="main">
-          <div class="">
-            <div class="page-title">
-              <div class="title_left">
-                <h3> Ajouter un compte </h3>
-              </div>
-
-              
+      <!-- page content -->
+      <div class="right_col" role="main">
+        <div class="">
+          <div class="page-title">
+            <div class="title_left">
+                <h3> <font color="#be302d" > Ajouter un compte </font></h3>
             </div>
-            <div class="clearfix"></div>
 
-            <div class="row">
-              <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Planificateur <small></small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
-                    <script>
-                      $(document).ready(function (){
+          </div>
+          <div class="clearfix"></div>
+
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>Planificateur <small></small></h2>
+                  <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                  </ul>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+                  <script>
+                      $(document).ready(function () {
                         $('#send').on('click', function (event) {
-                        event.preventDefault();
-                        var user = {
-                        nom: $("#nom").val(),
-                        prenom: $("#prenom").val(),
-                        email: $("#email").val(),
-                        motDePasse: $("#motDePasse").val(),
-                        sexe:$('#registration-form input[name=sexe]:checked').val(),
-                        role:$('#registration-form input[name=role]:checked').val(), 
-                        dateDeNaissance: $("#dateDeNaissance").val(),
-                        telephone:$("#telephone").val(),
-                                   }
-                                  
-                                
-                       //console.log(user);
-                           $.ajax({
-                                type: 'POST',
-                                url: '/api/registerPl',
-                                data: user,
-                                success: function () {
-                                                  window.location.replace("/api/accueil/Planificateur");
-                                                 console.log('data added to the database');
-                                                  },
-                                error: function () {
-                                                 console.log('erreur');
-                                                }
-                                });
-                                return false;
+                          event.preventDefault();
+                          var user = {
+                            nom: $("#nom").val(),
+                            prenom: $("#prenom").val(),
+                            email: $("#email").val(),
+                            motDePasse: $("#motDePasse").val(),
+                            sexe: $('#registration-form input[name=sexe]:checked').val(),
+                            role: $('#registration-form input[name=role]:checked').val(),
+                            dateDeNaissance: $("#dateDeNaissance").val(),
+                            telephone: $("#telephone").val(),
+                          }
 
+
+                          //console.log(user);
+                          $.ajax({
+                            type: 'POST',
+                            url: '/api/registerPl',
+                            data: user,
+                            success: function () {
+                              window.location.replace("/api/accueil/Planificateur");
+                              console.log('data added to the database');
+                            },
+                            error: function () {
+                              console.log('erreur');
+                            }
+                          });
+                          return false;
+
+                        });
                       });
-                    });
-                    </script>
-                    <form id="registration-form"  class="form-horizontal form-label-left"  >
-                        <form id="registration-form"  class="form-horizontal form-label-left"  >
+                  </script>
+                  <form id="registration-form" class="form-horizontal form-label-left">
+                    <form id="registration-form" class="form-horizontal form-label-left">
+
 
                       
-                      <span class="section">Informations personnelles du planificateur </span>
-                       
+
 
                       <div class="item form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Nom <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="nom" class="form-control col-md-7 col-xs-12"   name="nom" placeholder="Nom" required="required" type="text">
+                          <input id="nom" class="form-control col-md-7 col-xs-12" name="nom" placeholder="Nom" required="required" type="text">
                         </div>
                       </div>
-                       <div class="item form-group">
+                      <div class="item form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="prenom">Prénom <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="prenom" class="form-control col-md-7 col-xs-12"   name="prenom" placeholder="Prénom" required="required" type="text">
+                          <input id="prenom" class="form-control col-md-7 col-xs-12" name="prenom" placeholder="Prénom" required="required" type="text">
                         </div>
                       </div>
-                     
+
                       <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Sexe </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            
-                                <input type="radio" name="sexe" class="flat"  value="Masculin" checked  /> Masuclin
-                              
-                              
-                                <input type="radio" name="sexe"  class ="flat"  value="Feminin"   /> Feminin
-                            
-                          
-                            
-                          
-                             
-                              
-                        </div> 
-                      </div> 
 
-                      
-                        
-                      
+                          <input type="radio" name="sexe" class="flat" value="Masculin" checked /> Masuclin
+
+
+                          <input type="radio" name="sexe" class="flat" value="Feminin" /> Feminin
+
+
+
+
+
+
+                        </div>
+                      </div>
+
+
+
+
                       <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Date de naissance <span class="required">*</span>
                         </label>
@@ -387,42 +306,45 @@
                           <input type="email" id="email2" name="confirm_email" data-validate-linked="email" required="required" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
-                     
-                     
+
+
                       <div class="item form-group">
-                          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="telephone">telephone <span class="required">*</span>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="telephone">telephone <span class="required">*</span>
                           </label>
-                          <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input id="telephone" class="form-control col-md-7 col-xs-12"  name="telephone" placeholder="telephone" required="required" type="text" data-inputmask="'mask' : '(999) 999-9999'">
-                          </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input id="telephone" class="form-control col-md-7 col-xs-12" name="telephone" placeholder="telephone" required="required"
+                            type="text" data-inputmask="'mask' : '(999) 999-9999'">
+                        </div>
                       </div>
-                      
+
                       <div class="item form-group">
                         <label for="password" class="control-label col-md-3">Mot de passe</label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="motDePasse" type="password" name="motDePasse" data-validate-length="6" class="form-control col-md-7 col-xs-12" required="required">
+                          <input id="motDePasse" type="password" name="motDePasse" data-validate-length="6" class="form-control col-md-7 col-xs-12"
+                            required="required">
                         </div>
                       </div>
                       <div class="item form-group">
                         <label for="password2" class="control-label col-md-3 col-sm-3 col-xs-12">Confirmation Mot de passe</label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input id="password2" type="password" name="password2" data-validate-linked="motDePasse" class="form-control col-md-7 col-xs-12" required="required">
+                          <input id="password2" type="password" name="password2" data-validate-linked="motDePasse" class="form-control col-md-7 col-xs-12"
+                            required="required">
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Fonction</label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
 
-                          
-                              <input type="radio"  class="flat" name="role" value="Planificateur" checked> Planificateur
-                              <input type="radio" class="flat" name="role" value="Administrateur" disabled="disabled" > Administrateur
-                              <input type="radio" class="flat" name="role" value="Agent" disabled="disabled" > Agent
-                            
-                          
+
+                          <input type="radio" class="flat" name="role" value="Planificateur" checked> Planificateur
+                          <input type="radio" class="flat" name="role" value="Administrateur" disabled="disabled"> Administrateur
+                          <input type="radio" class="flat" name="role" value="Agent" disabled="disabled"> Agent
+
+
                         </div>
                       </div>
-                      
-                     
+
+
                       <div class="ln_solid"></div>
                       <div class="form-group">
                         <div class="col-md-6 col-md-offset-3">
@@ -431,45 +353,46 @@
                         </div>
                       </div>
                     </form>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <!-- /page content -->
-
-        <!-- footer content -->
-        <footer>
-          <div class="pull-right">
-            Swissport 2017 -  <a href="http://www.swissport.com/">Swissport</a>
-          </div>
-          <div class="clearfix"></div>
-        </footer>
-        <!-- /footer content -->
       </div>
+      <!-- /page content -->
+
+      <!-- footer content -->
+      <footer>
+        <div class="pull-right">
+          Swissport 2017 - <a href="http://www.swissport.com/">Swissport</a>
+        </div>
+        <div class="clearfix"></div>
+      </footer>
+      <!-- /footer content -->
     </div>
+  </div>
 
-    <!-- jQuery -->
-    <script src="/api/public/sources/vendors/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="/api/public/sources/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- FastClick -->
-    <script src="/api/public/sources/vendors/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="/api/public/sources/vendors/nprogress/nprogress.js"></script>
-    <!-- validator -->
-    <script src="/api/public/sources/vendors/validator/validator.js"></script>
+  <!-- jQuery -->
+  <script src="/api/public/sources/vendors/jquery/dist/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/api/public/sources/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!-- FastClick -->
+  <script src="/api/public/sources/vendors/fastclick/lib/fastclick.js"></script>
+  <!-- NProgress -->
+  <script src="/api/public/sources/vendors/nprogress/nprogress.js"></script>
+  <!-- validator -->
+  <script src="/api/public/sources/vendors/validator/validator.js"></script>
 
-    <!-- Custom Theme Scripts -->
-    <script src="/api/public/sources/build/js/custom.min.js"></script>
-    
- <!-- iCheck -->
- <script src="/api/public/sources/vendors/iCheck/icheck.min.js"></script>    
- <!-- Switchery -->
- <script src="/api/public/sources/vendors/switchery/dist/switchery.min.js"></script>
- <!-- jquery.inputmask -->
- <script src="/api/public/sources/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js"></script>
-	
-  </body>
+  <!-- Custom Theme Scripts -->
+  <script src="/api/public/sources/build/js/custom.min.js"></script>
+
+  <!-- iCheck -->
+  <script src="/api/public/sources/vendors/iCheck/icheck.min.js"></script>
+  <!-- Switchery -->
+  <script src="/api/public/sources/vendors/switchery/dist/switchery.min.js"></script>
+  <!-- jquery.inputmask -->
+  <script src="/api/public/sources/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js"></script>
+
+</body>
+
 </html>

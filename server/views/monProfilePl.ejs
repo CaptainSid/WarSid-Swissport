@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/gif/png" href="/api/public/sources/production/images/logo.png">
 
-  <title> Profile |<%= personAg.prenom %> <%= personAg.nom %>  </title>
+  <title> Mon profil | </title>
 
   <!-- Bootstrap -->
   <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,7 +21,7 @@
   <link href="/api/public/sources/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
   <!-- Custom Theme Style -->
-  <link href="/api/public/sources/build/css/custom.min.css" rel="stylesheet">
+  <link href="/api/public/sources/build/css/custom.min2.css" rel="stylesheet">
   <link rel="shortcut icon" href="/api/public/sources/production/images/logo2.png" type="image/x-icon">     
   
 </head>
@@ -30,46 +30,52 @@
   <!-- le script pour le token de l'accés, l'utilisateur ne pourra pas acceder à cette page sans se connecter -->
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <!-- pour la gestion des accès et obtention de la personne connectée -->
   <script>
-    var logged = JSON.parse(localStorage.getItem('logged'));
-    if (logged.fonction != "Administrateur") {
-        window.location.replace("/api/echec");
+      $(document.body).hide();
+      var show = false;
+      var token = localStorage.getItem('token');
+
+      if (token != null || token != undefined) {
+        $.ajaxSetup({
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('authorization', 'bearer ' + token);
+          }
+        });
       }
-  
-  </script>
-  <!-- fin de la gestion des accés -->
-  <script>
-        $(document.body).hide();
-        var show = false;
-        var token = localStorage.getItem('token');
 
-        if (token != null || token != undefined) {
-          $.ajaxSetup({
-            beforeSend: function (xhr) {
-              xhr.setRequestHeader('authorization', 'bearer ' + token);
-            }
-          });
-        }
-
-        $.ajax({
-          type: "GET",
-          url: "/api/token",
-          success: function () {
-            show = true;
-          },
-          error: function () {
-            window.location.replace("/api/login");
-          },
-          async: false
-        })
+      $.ajax({
+        type: "GET",
+        url: "/api/token",
+        success: function () {
+          show = true;
+        },
+        error: function () {
+          window.location.replace("/api/login");
+        },
+        async: false
+      })
 
 
-        if (show) {
-          $(document.body).show();
-        }
+      if (show) {
+        $(document.body).show();
+      }
   </script>
   <!-- fin du script de l'obligation de connexion -->
+  <script>
+    var logged = JSON.parse(localStorage.getItem('logged'));
+    console.log('le nom est' + logged.email);
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+      socket = io.connect('http://localhost:3000', { query:  'fonction='+logged.fonction });
+      socket.emit('viewAllMessages');
+      socket.on('messages', function (newMessage) {
+          $.toaster({ priority: 'danger', title: 'Nouveau Message', message: newMessage.text });
+          socket.emit('messageRecu', newMessage);
+          // mise à jour des derniers messages
+          socket.emit('viewAllMessages'); 
+      })
+  </script>
   <div class="container body">
     <div class="main_container">
       <div class="col-md-3 left_col">
@@ -113,34 +119,18 @@
             <div class="menu_section">
               
               <ul class="nav side-menu">
-
-                <li><a><i class="fa fa-table"></i> Liste Administrateurs <span class="fa fa-chevron-down"></span></a>
-                  <ul class="nav child_menu">
-
-                    <li><a href="/api/accueil/Administrateur">Afficher Administrateurs</a></li>
-                    <li><a href="/api/registerAd">Ajouter Administrateur</a></li>
-
-
-                  </ul>
+                <li><a href="/api/listePlanning"><i class="fa fa-home"></i> Liste des Plannings</a>
                 </li>
-                <li><a><i class="fa fa-table"></i> Liste Planificateurs <span class="fa fa-chevron-down"></span></a>
-                  <ul class="nav child_menu">
-                    <li><a href="/api/accueil/Planificateur">Afficher Planificateurs </a></li>
-                    <li><a href="/api/registerPl">Ajouter Planificateur</a></li>
-
-                  </ul>
+                <li><a href="/api/upload"><i class="fa fa-edit"></i> Ajouter un Planning </a>
                 </li>
-                <li><a><i class="fa fa-table"></i> Liste Agents <span class="fa fa-chevron-down"></span></a>
-                  <ul class="nav child_menu">
-                    <li><a href="/api/accueilAg/Agent">Afficher Agents </a></li>
-                    <li><a href="/api/registerAg">Ajouter Agent</a></li>
-                    <li><a href="/api/importerAg">Importer liste Agents</a></li>
-                    
-
-                  </ul>
+                <li><a href="/api/ajouterShift"><i class="fa fa-edit"></i> Ajouter des Shifts </a>
                 </li>
-              
-              </ul>
+                <li><a href="/api/listeShift"><i class="fa fa-desktop"></i> Liste des Shifts</a>
+                </li>
+                
+                <li><a href="/api/listeAgPl/Agent"><i class="fa fa-desktop"></i> Liste des agents</a>
+                </li>
+            </ul>
             </div>
 
 
@@ -164,9 +154,9 @@
             <ul class="nav navbar-nav navbar-right">
               <li class="">
                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="/api/public/sources/production/images/user.png" alt=""> <script type="text/javascript">
-                      document.write(logged.nom)
-                    </script> <script type="text/javascript">
+                   <img src="/api/public/sources/production/images/user.png" alt=""> <script type="text/javascript">
+                    document.write(logged.nom)
+                  </script> <script type="text/javascript">
                       document.write(logged.prenom)
                     </script>
                     <span class=" fa fa-angle-down"></span>
@@ -176,11 +166,44 @@
 
 
 
-                  <li><a href="/api/login"><i class="fa fa-sign-out pull-right"></i> Déconnexion </a></li>
+                  <li><a href="/api/login"><i class="fa fa-sign-out pull-right"></i> Déconnexion</a></li>
                 </ul>
               </li>
 
-            
+              <li role="presentation" class="dropdown">
+                <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-envelope-o"></i>
+                    <script>
+                      socket.on('allMessages',function(messages){
+                          var myMessages=document.getElementById("myMessages");
+                          myMessages.innerHTML='<div id="myMessages"></div>'
+                          var  NbmsgToDisplay=6;
+                          if (NbmsgToDisplay >messages.length){
+                              NbmsgToDisplay=messages.length;
+                          }
+                              for (var i=0;i<NbmsgToDisplay;i++){
+                                  myMessages.innerHTML +='<div id="myMessages"><li><a><span class="message">'+ messages[i].text+' </span> </a></li></div>'
+                          }
+                          var nb=document.getElementById('nbMsg');
+                          var x=messages.length;
+                          nb.innerHTML += ' <span class="badge bg-green" >'+x+'</span>'
+                      });
+                      </script>
+                      <div id="nbMsg"></div>
+            </a>
+                          <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">                           
+           
+                          <div id="myMessages"></div>
+                  <li>
+                    <div class="text-center">
+                      <a href="/api/listeMessage">
+                                  <strong>Voir tous les messages</strong>
+                                  <i class="fa fa-angle-right"></i>
+                              </a>
+                    </div>
+                  </li>
+                </ul>
+              </li>
             </ul>
           </nav>
         </div>
@@ -192,8 +215,8 @@
         <div class="">
           <div class="page-title">
             <div class="title_left">
-                <h3><font color="#be302d" > Le profil de
-                    <%= personAg.prenom %> </font> <small></small></h3>
+              
+                <h3><font color="#be302d" > Afficher mon compte </font> <small></small></h3>
             </div>
 
             <div class="title_right">
@@ -208,10 +231,7 @@
           <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
               <div class="x_title">
-                <h2>Bienvenu(e)
-                  <script type="text/javascript">
-                    document.write(logged.prenom)
-                  </script> ! </h2>
+                <h2> Mon profil </h2>
                 <ul class="nav navbar-right panel_toolbox">
                   <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                   </li>
@@ -238,8 +258,12 @@
 
 
                   <h3>
-                    <%= personAg.nom %>
-                      <%= personAg.prenom %>
+                    <script type="text/javascript">
+                      document.write(logged.nom)
+                    </script>
+                    <script type="text/javascript">
+                      document.write(logged.prenom)
+                    </script>
                   </h3>
 
                   <ul class="list-unstyled user_data">
@@ -254,14 +278,9 @@
                           <i class="fa fa-external-link user-profile-icon"></i>
                           <a href="http://www.kimlabs.com/profile/" target="_blank">www.kimlabs.com</a>
                         </li> -->
-                  </ul>  
-                  <script>
-                  if (logged.fonction == "Administrateur") {
-                    
-                  
-                  <a href="/api/modifProfilAg/<%= personAg._id %>" class="btn btn-success"><i class="fa fa-edit m-right-xs"></i>Modifier profil </a>
-                  }
-                  </script>
+                  </ul>
+
+
                   <br />
 
                   <!-- start skills -->
@@ -273,7 +292,7 @@
 
                   <div class="profile_title">
                     <div class="col-md-6">
-                      <h2>Les informations </h2>
+                      <h2>Mes informations </h2>
                     </div>
 
                   </div>
@@ -300,7 +319,9 @@
                             <div class="message_wrapper">
                               <h4 class="heading">Nom</h4>
                               <blockquote class="message">
-                                <%= personAg.nom %>
+                                <script type="text/javascript">
+                                  document.write(logged.nom)
+                                </script>
                               </blockquote>
                               <br />
 
@@ -312,7 +333,9 @@
                             <div class="message_wrapper">
                               <h4 class="heading">Prenom </h4>
                               <blockquote class="message">
-                                <%= personAg.prenom %>
+                                <script type="text/javascript">
+                                  document.write(logged.prenom)
+                                </script>
                               </blockquote>
                               <br />
 
@@ -324,7 +347,9 @@
                             <div class="message_wrapper">
                               <h4 class="heading">Sexe</h4>
                               <blockquote class="message">
-                                <%= personAg.sexe %>
+                                <script type="text/javascript">
+                                  document.write(logged.sexe)
+                                </script>
                               </blockquote>
                               <br />
 
@@ -336,7 +361,9 @@
                             <div class="message_wrapper">
                               <h4 class="heading">Date de naissance</h4>
                               <blockquote class="message">
-                                <%= personAg.dateDeNaissance %>
+                                <script type="text/javascript">
+                                  document.write(logged.dateDeNaissance)
+                                </script>
                               </blockquote>
                               <br />
 
@@ -354,24 +381,14 @@
                         <!-- start user projects -->
                         <ul class="messages">
                           <li>
-                            <img src="/api/public/sources/production/images/matricule.png" class="avatar" alt="Avatar">
-
-                            <div class="message_wrapper">
-                              <h4 class="heading">Matricule</h4>
-                              <blockquote class="message">
-                                <%= personAg.matricule %>
-                              </blockquote>
-                              <br />
-
-                            </div>
-                          </li>
-                          <li>
                             <img src="/api/public/sources/production/images/phone.png" class="avatar" alt="Avatar">
 
                             <div class="message_wrapper">
                               <h4 class="heading">Téléphone</h4>
                               <blockquote class="message">
-                                <%= personAg.telephone %>
+                                <script type="text/javascript">
+                                  document.write(logged.telephone)
+                                </script>
                               </blockquote>
                               <br />
 
@@ -383,7 +400,9 @@
                             <div class="message_wrapper">
                               <h4 class="heading">email </h4>
                               <blockquote class="message">
-                                <%= personAg.email %>
+                                <script type="text/javascript">
+                                  document.write(logged.email)
+                                </script>
                               </blockquote>
                               <br />
 
@@ -395,7 +414,9 @@
                             <div class="message_wrapper">
                               <h4 class="heading">Fonction</h4>
                               <blockquote class="message">
-                                <%= personAg.fonction %>
+                                <script type="text/javascript">
+                                  document.write(logged.fonction)
+                                </script>
                               </blockquote>
                               <br />
 
@@ -447,7 +468,8 @@
   <!-- bootstrap-daterangepicker -->
   <script src="/api/public/sources/vendors/moment/min/moment.min.js"></script>
   <script src="/api/public/sources/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-
+  <script src="/api/public/sources/jquery.toaster.js"></script>
+  
   <!-- Custom Theme Scripts -->
   <script src="/api/public/sources/build/js/custom.min.js"></script>
 

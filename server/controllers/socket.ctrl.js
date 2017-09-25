@@ -9,7 +9,7 @@ module.exports.init = function (io) {
         var fonction=handshakeData._query['fonction'];
         var matricule=handshakeData._query['auth_token'];
         // var thisSocket=module.exports.getSocket(matricule);&& (thisSocket===undefined || thisSocket === null )
-        if (fonction==='Plannificateur')
+        if (fonction==='Planificateur')
         {
             socket.fonction=fonction;
             console.log("un plannificateur s'est connecté");
@@ -35,7 +35,6 @@ module.exports.init = function (io) {
                     });
                 });
                 socket.on('viewAllMessages',function(){
-                    console.log("view messages request recieved");
                     var m=allMsg.find().sort({_id:-1}).then(function(result,err){
                         if (err) throw err;
                         socket.emit('allMessages',result);

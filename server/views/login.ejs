@@ -1,141 +1,149 @@
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title> Connexion </title>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap -->
-    <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="/api/public/sources/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="/api/public/sources/vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- Animate.css -->
-    <link href="/api/public/sources/vendors/animate.css/animate.min.css" rel="stylesheet">
+  <title> Connexion </title>
 
-    <!-- Custom Theme Style -->
-    <link href="/api/public/sources/build/css/custom.min1.css" rel="stylesheet">
-  </head>
+  <!-- Bootstrap -->
+  <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="/api/public/sources/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <!-- NProgress -->
+  <link href="/api/public/sources/vendors/nprogress/nprogress.css" rel="stylesheet">
+  <!-- Animate.css -->
+  <link href="/api/public/sources/vendors/animate.css/animate.min.css" rel="stylesheet">
 
-  <body style="background-image:url(/api/public/sources/production/images/login.png);background-size: 1500px 1000px;
+  <!-- Custom Theme Style -->
+  <link href="/api/public/sources/build/css/custom.min1.css" rel="stylesheet">
+  <link rel="shortcut icon" href="/api/public/sources/production/images/logo2.png" type="image/x-icon">     
+  
+</head>
+
+<body style="background-image:url(/api/public/sources/production/images/login.png);background-size: 1500px 1000px;
     background-repeat: no-repeat;" class="login">
-    <div>
-      <a class="hiddenanchor" id="signup"></a>
-      <a class="hiddenanchor" id="signin"></a>
+  <div>
+    <a class="hiddenanchor" id="signup"></a>
+    <a class="hiddenanchor" id="signin"></a>
 
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-      
-      
-      
-          <script>
-              $(document).ready(function () {
-                  $('#login-form').on('submit', function (event) {
-                      event.preventDefault();
-                      var user = {
-                          email: $("#email").val(),
-                          motDePasse: $("#password").val(),
-                          message:'ss'
-                      }
-                      $.ajax({
-                          type: 'POST',
-                          url: '/api/login',
-                          data: user,
-                          success: function (data) {                        
-                              localStorage.setItem('token', data.token);
-                              localStorage.setItem('logged', JSON.stringify({
-                               email: data.result.email,
-                              motDePasse: data.result.motDePasse,
-                              nom: data.result.nom,
-                              prenom: data.result.prenom,
-                              sexe: data.result.sexe,
-                              fonction: data.result.fonction, 
-                              dateDeNaissance : data.result.dateDeNaissance,
-                              telephone : data.result.telephone
-                                }));
-                                if ( data.result.fonction=='Administrateur')
-                                {
-                                  window.location.replace("/api/accueil/Administrateur");   
-                                }else
-                                {
-                                  if(data.result.fonction=='Planificateur')
-                                  {
-                                    window.location.replace("/api/listePlanning");   
-                                  }else{
-                                    window.location.replace("/api/echec");   
-                                  }
-                              
-                                }
-                                  
-                          },
-                          error:function(data){   
-                              $.ajax({
-                                type: 'GET',
-                                url: '/api/echecLogin',
-                                success:function(data){
-                                  location.reload();
-                                }
-                              });
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
-                          },
-                          
-      
-                      })
-                      return false;
-                  });
+
+
+    <script>
+      $(document).ready(function () {
+        $('#login-form').on('submit', function (event) {
+          event.preventDefault();
+          var user = {
+            email: $("#email").val(),
+            motDePasse: $("#password").val(),
+            message: 'ss'
+          }
+          $.ajax({
+            type: 'POST',
+            url: '/api/login',
+            data: user,
+            success: function (data) {
+              localStorage.setItem('token', data.token);
+              localStorage.setItem('logged', JSON.stringify({
+                email: data.result.email,
+                motDePasse: data.result.motDePasse,
+                nom: data.result.nom,
+                prenom: data.result.prenom,
+                sexe: data.result.sexe,
+                fonction: data.result.fonction,
+                dateDeNaissance: data.result.dateDeNaissance,
+                telephone: data.result.telephone
+              }));
+              if (data.result.fonction == 'Administrateur') {
+                window.location.replace("/api/accueil/Administrateur");
+              } else {
+                if (data.result.fonction == 'Planificateur') {
+                  window.location.replace("/api/listePlanning");
+                } else {
+                  window.location.replace("/api/echec");
+                }
+
+              }
+
+            },
+            error: function (data) {
+              $.ajax({
+                type: 'GET',
+                url: '/api/echecLogin',
+                success: function (data) {
+                  location.reload();
+                }
               });
-          </script>
-      
-      <div class="login_wrapper">
-        <div class="animate form login_form">
-          <section class="login_content">
 
-            <form id="login-form">
-              <h1> 
-                Bienvenue 
-              </h1>
-             <!-- <img src="images/logo.png" alt="LOGO" style="width:150px;height:50px" > -->
-             
-              <p style="color:red"> <%= message %></p> 
-              <div>
-                <br>
-                <table cellspacing='2'align="center" >
-                  <tr><td width="320"><input type="email" id="email" class="form-control" placeholder="email" required="" /></td></tr>
-                </table>
-              </div>
-              <div>
-                <table cellspacing='2'align="center" ><tr><td width="320"><input type="password" id="password" class="form-control" placeholder="Mot de passe" required="" /></td></tr></table>
-              </div>
-              <div>
-                  <button id="send" type="submit" class="btn btn-default">Se connecter</button>
-                <a class="reset_pass" href="#">Mot de passe oublié?</a>
-              </div>
+            },
 
-              <div class="clearfix"></div>
-<!--
+
+          })
+          return false;
+        });
+      });
+    </script>
+
+    <div class="login_wrapper">
+      <div class="animate form login_form">
+        <section class="login_content">
+
+          <form id="login-form">
+            <h1>
+              Bienvenue
+            </h1>
+            <!-- <img src="images/logo.png" alt="LOGO" style="width:150px;height:50px" > -->
+
+            <p style="color:red">
+              <%= message %>
+            </p>
+            <div>
+              <br>
+              <table cellspacing='2' align="center">
+                <tr>
+                  <td width="320"><input type="email" id="email" class="form-control" placeholder="email" required="" /></td>
+                </tr>
+              </table>
+            </div>
+            <div>
+              <table cellspacing='2' align="center">
+                <tr>
+                  <td width="320"><input type="password" id="password" class="form-control" placeholder="Mot de passe" required="" /></td>
+                </tr>
+              </table>
+            </div>
+            <div>
+              <button id="send" type="submit" class="btn btn-default">Se connecter</button>
+              <a class="reset_pass" href="#">Mot de passe oublié?</a>
+            </div>
+
+            <div class="clearfix"></div>
+            <!--
               <div class="separator">
                 <p class="change_link"> Nouveaux compte?
                   <a href="#signup" class="to_register"> Créer un compte administrateur</a>
                 -->
 
 
-                <div class="clearfix"></div>
-                <br />
+            <div class="clearfix"></div>
+            <br />
 
-                <div color="black">
-                  <h1> Swissport!</h1>
-                  <p>©2017 tout droit résérvés.<%= message %> <a href="http://www.swissport.com/">Swissport</a></p>
-                </div>
-              </div>
-            </form>
-          </section>
-        </div>
-<!--
+            <div color="black">
+              <h1> Swissport!</h1>
+              <p>©2017 tout droit résérvés.
+                <%= message %> <a href="http://www.swissport.com/">Swissport</a></p>
+            </div>
+      </div>
+      </form>
+      </section>
+    </div>
+    <!--
         <div id="register" class="animate form registration_form">
           <section class="login_content">
             <form>
@@ -179,8 +187,10 @@
 
 
 
-      </div>
-    </div>
-    <script src="/api/public/sources/production/js/jquery.js"></script><script src="/api/public/sources/production/js/login.js"></script>
-  </body>
+  </div>
+  </div>
+  <script src="/api/public/sources/production/js/jquery.js"></script>
+  <script src="/api/public/sources/production/js/login.js"></script>
+</body>
+
 </html>

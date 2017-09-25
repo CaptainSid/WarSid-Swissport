@@ -3,11 +3,13 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/gif/png" href="/api/public/sources/production/images/logo.png">
-    <title>Modifier un planning</title>
+    
+    <title>Tous les messages</title>
     <!-- Bootstrap -->
     <link href="/api/public/sources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -16,12 +18,11 @@
     <link href="/api/public/sources/vendors/nprogress/nprogress.css" rel="stylesheet">
     <!-- iCheck -->
     <link href="/api/public/sources/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-    <!-- bootstrap-wysiwyg -->
-    <link href="/api/public/sources/vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
-    <!-- Switchery -->
-    <link href="/api/public/sources/vendors/switchery/dist/switchery.min.css" rel="stylesheet">
-    <!-- bootstrap-daterangepicker -->
-    <link href="/api/public/sources/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <!-- Datatables -->
+    <link href="/api/public/sources/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="/api/public/sources/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+    <link href="/api/public/sources/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+    <link href="/api/public/sources/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link href="/api/public/sources/build/css/custom.min2.css" rel="stylesheet">
     <link rel="shortcut icon" href="/api/public/sources/production/images/logo2.png" type="image/x-icon">     
@@ -31,8 +32,6 @@
 <body class="nav-md">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script>
-        $(document.body).hide();
-        var show = false;
         var token = localStorage.getItem('token');
         if (token != null || token != undefined) {
             $.ajaxSetup({
@@ -59,26 +58,29 @@
             $(document.body).show();
         }
     </script>
-       <!-- pour la gestion des accès et obtention de la personne connectée -->
-       <script>
+    <!-- pour la gestion des accès et obtention de la personne connectée -->
+    <script>
+        
         var logged = JSON.parse(localStorage.getItem('logged'));
         if (logged.fonction != "Planificateur") {
             window.location.replace("/api/echec");
         }
+
     </script>
     <!-- fin de la gestion des accés -->
-            <script src="/socket.io/socket.io.js"></script>
-            <script>
-                socket = io.connect('http://localhost:3000', { query: 'fonction='+logged.fonction });
-                socket.emit('viewAllMessages');
-                socket.on('messages', function (newMessage) {
-                    $.toaster({ priority: 'danger', title: 'Nouveau Message', message: newMessage.text });
-                    socket.emit('messageRecu', newMessage);
-                    // mise à jour des derniers messages
-                    socket.emit('viewAllMessages'); 
-                })
-            </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        socket = io.connect('http://localhost:3000', { query: 'fonction='+logged.fonction });
+        socket.emit('viewAllMessages');
+        socket.on('messages', function (newMessage) {
+            $.toaster({ priority: 'danger', title: 'Nouveau Message', message: newMessage.text });
+            socket.emit('messageRecu', newMessage);
+            // mise à jour des derniers messages
+            socket.emit('viewAllMessages'); 
+        })
+    </script>
  
+
     <div class="container body">
         <div class="main_container">
             <div class="col-md-3 left_col">
@@ -117,14 +119,16 @@
                                 <li><a href="/api/ajouterShift"><i class="fa fa-edit"></i> Ajouter des Shifts </a>
                                 </li>
                                 <li><a href="/api/listeShift"><i class="fa fa-desktop"></i> Liste des Shifts</a>
-                                </li>     
+                                </li>
+                                
                                 <li><a href="/api/listeAgPl/Agent"><i class="fa fa-desktop"></i> Liste des agents</a>
                                 </li>
+                            </ul>
                         </div>
                     </div>
                     <!-- /sidebar menu -->
                     <!-- /menu footer buttons -->
-                   
+                    
                     <!-- /menu footer buttons -->
                 </div>
             </div>
@@ -140,17 +144,15 @@
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     <img src="/api/public/sources/production/images/user.png" alt=""><script type="text/javascript">
                                     document.write(logged.nom)
-                    </script>
-                      <script type="text/javascript">
-                                    document.write(logged.prenom)
+                    </script> <script type="text/javascript">
+                        document.write(logged.prenom)
                     </script>
                     <span class=" fa fa-angle-down"></span>
                   </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
                                     <li> <a href="/api/monProfilePl"> Mon profil </a> </li>
 
-
-                                    <li><a href="/api/login"><i class="fa fa-sign-out pull-right"></i> Déconnexion</a></li>
+                                    <li><a href="/api/login"><i class="fa fa-sign-out pull-right"></i> Déconnexion </a></li>
                                 </ul>
                             </li>
                             <li role="presentation" class="dropdown">
@@ -194,39 +196,21 @@
             </div>
             <!-- /top navigation -->
             <!-- page content -->
-            <script>
-                        function checkExtension() {
-                            var f = document.getElementById('planning');
-                            var fileName = f.value;
-                            var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
-                            ext = ext.toLowerCase();
-                            if (ext != "csv") {
-                                document.getElementById('planning').value = '';
-                                document.getElementById("send").disabled = true;
-                                alert("Attention ! vous devez importer des fichier .csv uniquement");
-                            }
-                            else {
-                                document.getElementById("send").disabled = false;
-                            }
-
-                        }
-            </script>
             <div class="right_col" role="main">
                 <div class="">
                         <div class="page-title">
                                 <div class="title_left">
-                                        <h3><font color="#be302d" > Modifier un planning </font> <small></small></h3>
+                                        <h3><font color="#be302d" > Afficher tous les messages reçus </font> <small></small></h3>
                                 </div>
         
         
                             </div>
-                    <div class="clearfix"></div>
                     <div class="row">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
                                  <!-- début title -->
                                  <div class="x_title">
-                                        <h2>Importer le nouveau fichier CSV <small></small></h2>
+                                        <h2>Messages</h2>
                                         <ul class="nav navbar-right panel_toolbox">
                                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                             </li>
@@ -237,34 +221,65 @@
                                         <div class="clearfix"></div>
                                     </div>
                                     <!-- fin title -->
-                                <div class="x_content">
-                                    <br />
-                                    <form id="upload_form" enctype="multipart/form-data" class="form-horizontal form-label-left" method="POST" action="/api/MAJPlanning/<%=data.annee%>/<%=data.mois%>">
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="planning">Planning.csv <span class="required">*</span>
-                                            </label>
-                                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="file" id="planning" name="planning" onchange="checkExtension();">
-                                            </div>
-                                        </div>
-                                        <div class="ln_solid"></div>
-                                        <div class="form-group">
-                                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-5">
-                                                <button type="submit" id='send' class="btn btn-success" disabled>Envoyer</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
+                                    <div class="x_content">
+                                        <ul class="list-unstyled msg_list">
+                                                <% for(var i=0;i<messages.length;i++){ %>
+                                          <li>
+                                            <a>
+                                              <span class="image">
+                                                <img src="/api/public/sources/production/images/user.png" alt="img" />
+                                              </span>
+                                              <span>
+                                                <span class="fa fa-close deleteMessage" name="<%=messages[i]._id%>"></span>
+                                              </span>
+                                              <span class="message">
+                                                    <%=messages[i].text %>
+                                              </span>
+                                            </a>
+                                          </li>  
+                                          <% } %>                                       
+                                        </ul>
+                                      </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <script>
+                    $(document).ready(function () {
+                        $('.deleteMessage').on('click', function (event) {
+                            event.preventDefault();
+                            var user_choice = window.confirm('Voulez-vous vraiment supprimer cet élément ? ');
+                            if (user_choice == true) {
+
+                                var id = $(this).attr('name');
+
+                                $.ajax({
+                                    type: 'DELETE',
+                                    url: '/api/supprimerMessage/' + id,
+                                    success: function (data) {
+                                        location.reload();
+                                    }
+                                })
+
+
+                            } else {
+
+
+                                return false;
+
+
+                            }
+
+                            return false;
+                        });
+                    });
+                </script>
             <!-- /page content -->
             <!-- footer content -->
             <footer>
                 <div class="pull-right">
-                    Swissport 2017 - <a href="https://swissport.com">Swissport</a>
+                    Swissport 2017 - <a href="http://www.swissport.com/">Swissport</a>
                 </div>
                 <div class="clearfix"></div>
             </footer>
@@ -279,11 +294,21 @@
     <script src="/api/public/sources/vendors/fastclick/lib/fastclick.js"></script>
     <!-- NProgress -->
     <script src="/api/public/sources/vendors/nprogress/nprogress.js"></script>
-    <!-- bootstrap-progressbar -->
-    <script src="/api/public/sources/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
     <!-- iCheck -->
     <script src="/api/public/sources/vendors/iCheck/icheck.min.js"></script>
-    <script src="/api/public/sources/jquery.toaster.js"></script>    
+    <!-- Datatables -->
+    <script src="/api/public/sources/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="/api/public/sources/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="/api/public/sources/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/api/public/sources/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="/api/public/sources/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="/api/public/sources/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="/api/public/sources/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="/api/public/sources/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/api/public/sources/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="/api/public/sources/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="/api/public/sources/jquery.toaster.js"></script>
+    
     <!-- Custom Theme Scripts -->
     <script src="/api/public/sources/build/js/custom.min.js"></script>
 </body>
