@@ -2,6 +2,9 @@ var mongoose = require('mongoose');
 const compte = require('../models/compte.model');
 const compteAg = require('../models/compteAg.model');
 var bcrypt = require('bcrypt');
+const paramValidation = require('../../config/param-validation');
+import Joi from 'joi';
+
 
 /* pour trouver un compte un administrateur ou planificateur */
 
@@ -150,52 +153,74 @@ module.exports.mProfilAg = function (req, res) {
 
 /* pour sauvegarde la modification d'un administrateur */
 module.exports.sauvModifProfilAd = function (req, res) {
-  const rounds = 10;
-  var key = bcrypt.genSaltSync(rounds);
-  var mdp_hash = bcrypt.hashSync(req.body.motDePasse, key);
+  var tmp;
+  tmp=Joi.validate(req.body, paramValidation.register, function (err, value) {
 
-  var newValues = { nom: req.body.nom, prenom: req.body.prenom, email: req.body.email, telephone: req.body.telephone, sexe: req.body.sexe, dateDeNaissance: req.body.dateDeNaissance, motDePasse: mdp_hash, cle: key, fonction: req.body.role };
-  
+    if (err === null) {
+      const rounds = 10;
+      var key = bcrypt.genSaltSync(rounds);
+      var mdp_hash = bcrypt.hashSync(req.body.motDePasse, key);
 
-  var x = compte.findByIdAndUpdate(req.params.id, newValues, { returnNewDocument: true }).then(function (res, err) {
-    if (err) throw err;
-    return res;
-  })
+      var newValues = { nom: req.body.nom, prenom: req.body.prenom, email: req.body.email, telephone: req.body.telephone, sexe: req.body.sexe, dateDeNaissance: req.body.dateDeNaissance, motDePasse: mdp_hash, cle: key, fonction: req.body.role };
 
-  return x;
-  
+
+      var x = compte.findByIdAndUpdate(req.params.id, newValues, { returnNewDocument: true }).then(function (res, err) {
+        if (err) throw err;
+        return res;
+      })
+
+      return x;
+    } else {
+      res.send(err.message);
+    }
+
+  });
+return tmp;
+
 };
 /* pour sauvegarde la modification d'un planificateur */
 module.exports.sauvModifProfilPl = function (req, res) {
-  const rounds = 10;
-  var key = bcrypt.genSaltSync(rounds);
-  var mdp_hash = bcrypt.hashSync(req.body.motDePasse, key);
+  var tmp=Joi.validate(req.body, paramValidation.register, function (err, value) {
+    if (err === null) {
+      const rounds = 10;
+      var key = bcrypt.genSaltSync(rounds);
+      var mdp_hash = bcrypt.hashSync(req.body.motDePasse, key);
 
-  var newValues = { nom: req.body.nom, prenom: req.body.prenom, email: req.body.email, telephone: req.body.telephone, sexe: req.body.sexe, dateDeNaissance: req.body.dateDeNaissance, motDePasse: mdp_hash, cle: key, fonction: req.body.role };
-  
+      var newValues = { nom: req.body.nom, prenom: req.body.prenom, email: req.body.email, telephone: req.body.telephone, sexe: req.body.sexe, dateDeNaissance: req.body.dateDeNaissance, motDePasse: mdp_hash, cle: key, fonction: req.body.role };
 
-  var x = compte.findByIdAndUpdate(req.params.id, newValues, { returnNewDocument: true }).then(function (res, err) {
-    if (err) throw err;
-    return res;
-  })
 
-  return x;
-  
+      var x = compte.findByIdAndUpdate(req.params.id, newValues, { returnNewDocument: true }).then(function (res, err) {
+        if (err) throw err;
+        return res;
+      })
+
+      return x;
+    } else {
+      res.send(err.message);
+    }
+  });
+return tmp;
+
 };
 /* pour sauvegarde la modification d'un agent*/
 module.exports.sauvModifProfilAg = function (req, res) {
-  const rounds = 10;
-  var key = bcrypt.genSaltSync(rounds);
-  var mdp_hash = bcrypt.hashSync(req.body.motDePasse, key);
+  var tmp=Joi.validate(req.body, paramValidation.registerAg, function (err, value) {
+    if (err === null) {
+      const rounds = 10;
+      var key = bcrypt.genSaltSync(rounds);
+      var mdp_hash = bcrypt.hashSync(req.body.motDePasse, key);
 
-  var newValues = { nom: req.body.nom, prenom: req.body.prenom, email: req.body.email, telephone: req.body.telephone, sexe: req.body.sexe, dateDeNaissance: req.body.dateDeNaissance, motDePasse: mdp_hash, cle: key, fonction: req.body.role, matricule: req.body.matricule };
-  
+      var newValues = { nom: req.body.nom, prenom: req.body.prenom, email: req.body.email, telephone: req.body.telephone, sexe: req.body.sexe, dateDeNaissance: req.body.dateDeNaissance, motDePasse: mdp_hash, cle: key, fonction: req.body.role, matricule: req.body.matricule };
 
-  var x = compteAg.findByIdAndUpdate(req.params.id, newValues, { returnNewDocument: true }).then(function (res, err) {
-    if (err) throw err;
-    return res;
-  })
 
-  return x;
-  
+      var x = compteAg.findByIdAndUpdate(req.params.id, newValues, { returnNewDocument: true }).then(function (res, err) {
+        if (err) throw err;
+        return res;
+      })
+      return x;
+    } else {
+      res.send(err.message);
+    }
+  });
+return tmp;
 };

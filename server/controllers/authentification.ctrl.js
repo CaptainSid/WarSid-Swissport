@@ -86,47 +86,44 @@ Joi.validate(req.body,paramValidation.registerAg,function(err,value){
                 });
             } else{
                 return res.json(user);
-                console.log('tajouta');
             }
         });
         }
         else{
             res.send(err.message);
-            console.log('zmer erreur');
         }
 });
 
 };
 
 module.exports.login=function(req,res) {
-   
+
 //rechercher l'utilisateur dans la BDD 
-    compte.findOne({email:req.body.email}).then(
-        function(result,err) {
-            if ( err) throw err;
-            if (!result) {
-                res.status('401').send('Authentication failed. User not found.')
-            } else{
-                const rounds=10;
-                var mdp_hash=bcrypt.hashSync(req.body.motDePasse,result.cle);
+compte.findOne({email:req.body.email}).then(
+    function(result,err) {
+        if ( err) throw err;
+        if (!result) {
+            res.status('401').send('Authentication failed. User not found.')
+        } else{
+            const rounds=10;
+            var mdp_hash=bcrypt.hashSync(req.body.motDePasse,result.cle);
 //Vérifier si le mot de passe est correct
-              if (mdp_hash != result.motDePasse) {
-                  res.status('401').send('Authentication failed. Wrong password.')
-              } else {
-                const token = jwt.sign({
-                    id: result._id
-                  }, config.jwtSecret, {
-                    expiresIn: '12h'
-                  });
-                return res.json({
-                    token,
-                    result
-                  });
-                
-              }
-            }
-        });
-      
+          if (mdp_hash != result.motDePasse) {
+              res.status('401').send('Authentication failed. Wrong password.')
+          } else {
+            const token = jwt.sign({
+                id: result._id
+              }, config.jwtSecret, {
+                expiresIn: '12h'
+              });
+            return res.json({
+                token,
+                result
+              });
+            
+          }
+        }
+    });      
 };
   
 

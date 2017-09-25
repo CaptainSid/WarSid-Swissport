@@ -8,6 +8,9 @@ const planningAgentGlobalSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  originalHeaders: [{
+    type: String
+  }],
   headers: [{
     type: String
   }],

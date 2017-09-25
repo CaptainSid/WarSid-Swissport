@@ -9,6 +9,6 @@ const router = express.Router();
 router.route('/mobileLogin').post(mobileCtrl.login);
 router.route('/mobileCheckUser').post(mobileCtrl.checkUser);
 router.route('/mobileChangerMDP').put(mobileCtrl.changeMdp);
-router.route('/mobileGetPlanning').get(mobileCtrl.getPlanning);
+router.route('/mobileGetPlanning').post(mobileCtrl.getPlanning);
 
 export default router;

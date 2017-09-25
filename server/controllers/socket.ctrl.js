@@ -36,7 +36,7 @@ module.exports.init = function (io) {
                 });
                 socket.on('viewAllMessages',function(){
                     console.log("view messages request recieved");
-                    var m=allMsg.find().then(function(result,err){
+                    var m=allMsg.find().sort({_id:-1}).then(function(result,err){
                         if (err) throw err;
                         socket.emit('allMessages',result);
                         return result;

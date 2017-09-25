@@ -48,6 +48,7 @@ module.exports.savePlanning = function (req, res) {
                             var planningGlobal = new plan({
                                 mois: month,
                                 annee: year,
+                                originalHeaders:buffer.originalHeaders,
                                 headers: buffer.headers,
                                 planning: buffer.planning
                             });
@@ -61,7 +62,7 @@ module.exports.savePlanning = function (req, res) {
                                         listeAgent.push(buffer.planning[i].matricule);
                                     }
                                     const maxNotifId = 99999999;
-                                    var notificationText = "Votre planning du mois  \n" + month + "/" + year + " est maintenant disponible";
+                                    var notificationText = "Votre planning du mois " + month + "/" + year + " est maintenant disponible";
                                     var randomInt = require('random-int');
                                     var notificationId = randomInt(maxNotifId);
                                     var notification = { id: notificationId, text: notificationText };
@@ -105,8 +106,10 @@ function traitementFichier(cheminCSV, res) {
     csv = csv.split("\n");
 
     // Récupérer le Header du fichier
+    var originalHeaders=[];
     var headers = [];
-    var headers = csv.shift().split(",");
+    originalHeaders = csv.shift().split(",");
+    headers=originalHeaders.slice(0);
     // Remplacer les valeurs  des headers afin qu'on puisse les manipuler facilement 
     var na = headers.indexOf('Name');
     headers[0] = "matricule";
@@ -125,6 +128,7 @@ function traitementFichier(cheminCSV, res) {
     for (var i = 0; i < headers.length; i++) {
         if (!estImportant(headers[i])) {
             headers.splice(i, 1);
+            originalHeaders.splice(i,1);
             forbiden.push(i + cpt);
             cpt++;
             i--;
@@ -153,7 +157,7 @@ function traitementFichier(cheminCSV, res) {
         }
     });
     fs.unlinkSync(cheminCSV);
-    return ({ headers, planning });
+    return ({ originalHeaders,headers, planning });
 };
 
 //vérifier pour une date donnée si un planning existe dans la BDD
@@ -248,23 +252,11 @@ module.exports.MAJplanning = function (req, res) {
             });
             //envoyer les notifs au agent concernés
             const maxNotifId = 9999999;
-            var notificationText = "Votre planning du mois \n" + planningGlobal.mois + "/" + planningGlobal.annee + " a été modifié";
+            var notificationText = "Votre planning du mois " + planningGlobal.mois + "/" + planningGlobal.annee + " a été modifié";
             var randomInt = require('random-int');
             var notificationId = randomInt(maxNotifId);
             var notification = { id: notificationId, text: notificationText };
             notifierPersonnel(agentsConcernee, notification);
-            // for (var i = 0; i < agentsConcernee.length; i++) {
-            //     var tmp = compte.findOneAndUpdate({ matricule: agentsConcernee[i] }, {$push: {"urgentNotifications": notification,"allNotifications":notification} }, { returnNewDocument: true }).then(function (result, err) {
-            //     if (err) throw err;
-
-            //         var mySocket=socketManager.getSocket(result.matricule);
-            //         console.log("my socket :"+mySocket);
-            //         if ( mySocket){
-            //             socketManager.sendNotification(mySocket,notification);
-            //         }
-            //         return result;
-            //     });
-            // }
         });
 
 

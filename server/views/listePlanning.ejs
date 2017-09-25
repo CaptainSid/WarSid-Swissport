@@ -135,7 +135,8 @@
                             socket.on('allMessages',function(messages){
                                 var myMessages=document.getElementById("myMessages");
                                 myMessages.innerHTML='<div id="myMessages"></div>'
-                                    for (var i=messages.length-1;i>-1;i--){
+                                var  NbmsgToDisplay=6;
+                                    for (var i=0;i<NbmsgToDisplay;i++){
                                         myMessages.innerHTML +='<div id="myMessages"><li><a><span class="message">'+ messages[i].text+' </span> </a></li></div>'
                                 }
                                 var nb=document.getElementById('nbMsg');
