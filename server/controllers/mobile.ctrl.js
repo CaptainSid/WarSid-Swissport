@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 const compte = require('../models/compteAg.model');
 const plan = require('../models/planning.model');
+const codeShift = require('../models/codeShift.model');
 import config from '../../config/config';
 
 
@@ -44,6 +45,8 @@ module.exports.checkUser = function (req, res) {
         });
 
 };
+
+
 
 
 module.exports.changeMdp = function (req, res) {
@@ -95,11 +98,25 @@ module.exports.getPlanning = function (req, res) {
                 if (resultat.length!=0){
                     res.json({ result: resultat, message: "success" });                
                 }else{
-                    res.json({message: "no plannings found"})                
+                    res.json({message: "no plannings found"});               
                 }
             }
             else{
-                res.json({message: "no plannings found"})
+                res.json({message: "no plannings found"});
             }
         });
 }
+
+module.exports.getAllCodes = function (req, res) {
+    var tableau = codeShift.find().then(
+        function (result, err) {
+            if (err) throw err;
+            if (result) {
+                res.json({ result: result[0], message: "success" });   
+            }
+            else {
+                res.json({message: "no plannings found"})             
+            }
+
+        });
+};

@@ -196,17 +196,21 @@
             <!-- /top navigation -->
             <!-- page content -->
             <script>
-                                    function checkExtension() {
-                                        var f = document.getElementById('shift');
-                                        var fileName = f.value;
-                                        var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
-                                        ext = ext.toLowerCase();
-                                       
-                                        
-                                            document.getElementById("send").disabled = false;
-                                        
-
+                                   function checkExtension() {
+                                    var f = document.getElementById('codeShift');
+                                    var fileName = f.value;
+                                    var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+                                    ext = ext.toLowerCase();
+                                    if (ext != "csv") {
+                                        document.getElementById('codeShift').value = '';
+                                        document.getElementById("send").disabled = true;
+                                        alert("Attention ! vous devez importer des fichier .csv uniquement");
                                     }
+                                    else {
+                                        document.getElementById("send").disabled = false;
+                                    }
+
+                                }
             </script>
             <div class="right_col" role="main">
                 <div class="">
@@ -236,14 +240,14 @@
                                 <!-- fin title -->
                                 <div class="x_content">
                                     <br />
-                                    <form id="upload_form" enctype="multipart/form-data" class="form-horizontal form-label-left" method="POST" action="/api/upload">
+                                    <form id="upload_form" enctype="multipart/form-data" class="form-horizontal form-label-left" method="POST" action="/api/uploadCodeShift">
                                        
                                        
                                         <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="planning"> Fichier des Shifts <span class="required">*</span>
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="codeShift"> Fichier des Shifts <span class="required">*</span>
                                             </label>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="file" id="planning" name="planning" onchange="checkExtension();">
+                                                <input type="file" id="codeShift" name="codeShift" onchange="checkExtension();">
                                             </div>
                                         </div>
                                         <div class="ln_solid"></div>

@@ -4,6 +4,8 @@ import paramValidation from '../../config/param-validation';
 import planCtrl from '../controllers/plannning.ctrl';
 import authCtrl from '../controllers/authentification.ctrl';
 import msgCtrl from '../controllers/message.ctrl';
+import codeCtrl from '../controllers/codeShift.ctrl';
+
 import config from '../../config/config';
 
 const router = express.Router(); // eslint-disable-line new-cap
@@ -18,8 +20,18 @@ router.route('/listePlanning').get(function (req, res) {
 router.route('/ajouterShift').get(function (req, res) {
     res.render('ajouterShift');
 });
+router.route('/uploadCodeShift').post(function (req, res) {
+    codeCtrl.saveCodeShift(req,res);
+});
 router.route('/listeShift').get(function (req, res) {
-    res.render('afficherShift');
+    codeCtrl.getAllCodes(res,res).then(function(tableau){
+        if (tableau ===null || tableau===undefined || (tableau.length===0)) {
+         res.render('echec');
+        }else{
+            res.render('afficherShift',{codes:tableau[0].allCodes});
+        }
+    });
+    
 });
 router.route('/listeMessage').get(function (req, res) {
     msgCtrl.getAllMessages(req, res).then(function (msg) {

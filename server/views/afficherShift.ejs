@@ -238,48 +238,19 @@
                                       </thead>
                     
                                       <tbody>
-                                        
+                                        <% for(var i=0;i<codes.length;i++){ %>
                                           <tr>
                                             <td>
-                                             code1
+                                            <%= codes[i].code %>
                                             </td>
                                             <td>
-                                              heure Début1
+                                            <%= codes[i].heureDebut %>
                                             </td>
                                             <td>
-                                              heure Fin 1
+                                            <%= codes[i].heureFin %>
                                             </td>
-                                            
-                    
-                                            
-                                            <!-- la méthode delete -->
-                    
-                                            <script>
-                                              $('.btn-danger').on('click', function (event) {
-                                                event.preventDefault();
-                                                var user_choice = window.confirm('Voulez-vous vraiment supprimer cet élément ? ');
-                                                if (user_choice == true) {
-                    
-                                                  var id = $(this).attr('name');
-                    
-                                                  $.ajax({
-                                                    type: 'DELETE',
-                                                    url: '/api/supprimerProfilAg/' + id,
-                                                    success: function (data) {
-                                                      location.reload();
-                                                    }
-                                                  })
-                                                }
-                                                else {
-                                                  return false;
-                                                }
-                                              });
-                                            </script>
-                                            <!-- fin de la méthode delete -->
-                    
-                                          </tr>
-                    
-                    
+                                        </tr>
+                                            <% } %>
                                       </tbody>
                                     </table>
                                   </div>

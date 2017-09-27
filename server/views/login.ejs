@@ -7,6 +7,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/gif/png" href="/api/public/sources/production/images/logo.png">
 
   <title> Connexion </title>
 
@@ -21,8 +22,6 @@
 
   <!-- Custom Theme Style -->
   <link href="/api/public/sources/build/css/custom.min1.css" rel="stylesheet">
-  <link rel="shortcut icon" href="/api/public/sources/production/images/logo2.png" type="image/x-icon">     
-  
 </head>
 
 <body style="background-image:url(/api/public/sources/production/images/login.png);background-size: 1500px 1000px;
@@ -96,13 +95,13 @@
 
           <form id="login-form">
             <h1>
-              Bienvenue
+              <img src="/api/public/sources/production/images/logo2.png" alt="Smiley face" style="float:center;width:42px;height:42px;margin-top:-5px">Bienvenue
             </h1>
             <!-- <img src="images/logo.png" alt="LOGO" style="width:150px;height:50px" > -->
 
-            <p style="color:red">
-              <%= message %>
-            </p>
+            <h4 style="color:#d50000">
+              <%= message %> 
+            </h4>
             <div>
               <br>
               <table cellspacing='2' align="center">
@@ -119,78 +118,31 @@
               </table>
             </div>
             <div>
-              <button id="send" type="submit" class="btn btn-default">Se connecter</button>
-              <a class="reset_pass" href="#">Mot de passe oublié?</a>
+              <button id="send" type="submit" class="btn btn-default" style="float:center">Se connecter</button>
+              
             </div>
 
             <div class="clearfix"></div>
-            <!--
-              <div class="separator">
-                <p class="change_link"> Nouveaux compte?
-                  <a href="#signup" class="to_register"> Créer un compte administrateur</a>
-                -->
-
-
+        
             <div class="clearfix"></div>
             <br />
 
             <div color="black">
-              <h1> Swissport!</h1>
-              <p>©2017 tout droit résérvés.
-                <%= message %> <a href="http://www.swissport.com/">Swissport</a></p>
+                
+              
+              <p> tous droits résérvés .
+                 <a href="http://www.swissport.com/">Swissport</a></p>
             </div>
       </div>
       </form>
       </section>
     </div>
-    <!--
-        <div id="register" class="animate form registration_form">
-          <section class="login_content">
-            <form>
-              <h1>Compte Administrateur</h1>
-              <div>
-                <br>
-                <table cellspacing='2'align="center" >
-                  <tr><td width="320"><input type="text" class="form-control" placeholder="Administrateur" required="" /></td></tr>
-                </table>
-              </div>
-              <div>
-                <table cellspacing='2'align="center" ><tr><td width="320"><input type="password" class="form-control" placeholder="Mot de passe" required="" /></td></tr></table>
-              </div>
-              <div>
-                <a class="btn btn-default submit" href="Creation_medecin.html">Se connecter</a>
-              </div>
-
-              <div class="clearfix"></div>
-
-              <div class="separator">
-
-                <div class="clearfix"></div>
-                <br />
-
-                <div>
-                  <h1> Swissport!</h1>
-                  <p>©2017 tout droits résérvés. </p>
-                </div>
-              </div>
-            </form>
-          </section>
-        </div>
-
--->
-
-
-
-
-
-
-
-
-
+    
   </div>
   </div>
   <script src="/api/public/sources/production/js/jquery.js"></script>
   <script src="/api/public/sources/production/js/login.js"></script>
+  <script src="/api/public/sources/vendors/moment/min/moment.min.js"></script>
 </body>
 
 </html>

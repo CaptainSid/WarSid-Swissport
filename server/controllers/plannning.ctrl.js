@@ -140,7 +140,7 @@ function traitementFichier(cheminCSV, res) {
     //parcourir le fichier
     csv.forEach(function (ligne) {
         var tmp = {};
-        var row = ligne.split(",")
+        var row = ligne.split(",");
         var cpt2 = 0;
         if (row[0] != '') // ligne non vide
         {

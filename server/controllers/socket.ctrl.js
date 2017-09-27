@@ -102,7 +102,7 @@ module.exports.init = function (io) {
             newmsg.save(function(err,newMsg){
                 if (err) throw err;
             });
-            var m=allMsg.find().then(function(result,err){
+            var m=allMsg.find().sort({_id:-1}).then(function(result,err){
                 if (err) throw err;
                 return result;
             });
@@ -110,10 +110,10 @@ module.exports.init = function (io) {
                 for (let socketId in io.sockets.connected) {
                     if (io.sockets.connected.hasOwnProperty(socketId)) {
                         let oldSocket = io.sockets.connected[socketId];                    
-                        if (oldSocket.fonction === 'Plannificateur')
+                        if (oldSocket.fonction === 'Planificateur')
                             {
                                 oldSocket.emit('messages',newMessage);
-                                socket.emit('allMessages',m);
+                                oldSocket.emit('allMessages',m);
                             }
                     }
                 }
